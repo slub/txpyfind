@@ -1,3 +1,3 @@
 __version__ = "0.0.0"
 
-from . import client, parser, slub
+from . import client, parser

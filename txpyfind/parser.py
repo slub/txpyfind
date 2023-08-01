@@ -23,7 +23,7 @@ class JSONResponse:
     def _unescape(self, value):
         if isinstance(value, str):
             return html.unescape(value.strip())
-        elif isinstance(value, list) and len(value) > 0 and all(type(v) == str for v in value):
+        elif isinstance(value, list) and len(value) > 0 and all(type(v) == str and len(v.strip()) > 0 for v in value):
             return [html.unescape(v.strip()) for v in value]
         else:
             return value
