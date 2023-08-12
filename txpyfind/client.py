@@ -9,7 +9,7 @@ class Find:
                  base_url,
                  document_path=None,
                  query_types=["default"],
-                 facets={},
+                 facets=[],
                  count_limit=100,
                  sort_pattern=None,
                  export_format="raw-solr-response",
@@ -27,9 +27,6 @@ class Find:
         self.export_page = export_page
         self.export_format = export_format
         self.logger = utils.get_logger("txpyfind.client.Find")
-
-    def _fetch(self, url):
-        return utils.json_request(url)
 
     def set_data_params(self, url, data_format=None, type_num=None):
         if data_format is None:
@@ -57,7 +54,7 @@ class Find:
                      parser_class=parser.JSONResponse):
         url = self.url_document(document_id, data_format=data_format, type_num=type_num)
         if url is not None:
-            doc = self._fetch(url)
+            doc = utils.json_request(url)
             if doc is not None:
                 if parser_class is not None:
                     return parser_class(doc)
@@ -85,11 +82,11 @@ class Find:
             url = utils.add_tx_param(url, "page", page)
         if count:
             if count > self.count_limit:
-                self.logger.warning("Count exceeds limit!")
+                self.logger.warning(f"Count {count} exceeds limit!")
                 count = self.count_limit
             url = utils.add_tx_param(url, "count", count)
         if sort != "" and self.sort_pattern is not None and not isinstance(self.sort_pattern.match(sort), re.Match):
-            self.logger.warning("Unknown sort instruction!")
+            self.logger.warning(f"Sort instruction {sort} is unknown!")
             sort = ""
         if sort != "":
             url = utils.add_tx_param(url, "sort", utils.url_encode(sort))
@@ -97,4 +94,4 @@ class Find:
 
     def get_query(self, query, qtype="default", facet={}, page=0, count=0, sort="", data_format="app", type_num=None):
         url = self.url_query(query, qtype=qtype, facet=facet, page=page, count=count, sort=sort, data_format=data_format, type_num=type_num)
-        return self._fetch(url)
+        return utils.json_request(url)
