@@ -77,24 +77,22 @@ def set_param(url, key, value=None):
     return url
 
 
-def tx_param(key):
-    """
-    [0]
-    """
+def tx_param(key, index=None):
     if isinstance(key, str):
         k = "[{}]".format(key)
     else:
         k = "".join("[{0}]".format(k) for k in key)
-    # k += "[0]"
+    if isinstance(index, int):
+        k += "[{0}]".format(index)
     return "tx_find_find{0}".format(k)
 
 
-def add_tx_param(url, key, value):
-    return add_param(url, tx_param(key), value)
+def add_tx_param(url, key, value, index=None):
+    return add_param(url, tx_param(key,  index=index), value)
 
 
-def set_tx_param(url, key, value):
-    return set_param(url, tx_param(key), value)
+def set_tx_param(url, key, value, index=None):
+    return set_param(url, tx_param(key, index=index), value)
 
 
 def tx_param_data(data_format, type_num=1369315139):
@@ -103,8 +101,9 @@ def tx_param_data(data_format, type_num=1369315139):
     return add_param(param, "type", type_num)
 
 
-def append_tx_data_params(url, mode, data_format=None, type_num=None):
-    if mode not in ["?", "&"]:
-        raise Exception
-    data_param = tx_param_data(data_format, type_num=type_num)
-    return "{0}{1}{2}".format(url, mode, data_param)
+def add_tx_param_data(url, data_format, type_num=1369315139):
+    return add_param(url, tx_param_data(data_format, type_num=type_num))
+
+
+def set_tx_param_data(url, data_format, type_num=1369315139):
+    return set_param(url, tx_param_data(data_format, type_num=type_num))
