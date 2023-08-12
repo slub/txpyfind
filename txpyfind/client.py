@@ -71,13 +71,13 @@ class Find:
                 if f not in self.facets:
                     self.logger.warning(f"Unknown facet type {f}!")
                     continue
-                url = self.add_tx_param(url, ["facet", f, utils.url_encode(facet[f])], 1)
+                url = utils.add_tx_param(url, ["facet", f, utils.url_encode(facet[f])], 1)
             elif type(f) == dict:
                 for k in f:
                     if k not in self.facets:
                         self.logger.warning(f"Unknown facet type {k}!")
                         continue
-                    url = self.add_tx_param(url, ["facet", k, utils.url_encode(f[k])], 1)
+                    url = utils.add_tx_param(url, ["facet", k, utils.url_encode(f[k])], 1)
         if page:
             url = utils.add_tx_param(url, "page", page)
         if count:
