@@ -1,3 +1,4 @@
+import re
 from . import utils
 from . import parser
 
@@ -87,7 +88,7 @@ class Find:
                 self.logger.warning("Count exceeds limit!")
                 count = self.count_limit
             url = utils.add_tx_param(url, "count", count)
-        if sort != "" and (sort_pattern is None or sort_pattern.match(sort)):
+        if sort != "" and (sort_pattern is None or not isinstance(sort_pattern.match(sort), re.Match)):
             self.logger.warning("Unknown sort instruction!")
             sort = ""
         if sort != "":
