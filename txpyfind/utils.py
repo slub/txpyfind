@@ -1,5 +1,6 @@
 import json
 import logging
+from urllib.parse import quote_plus
 from urllib.request import Request, urlopen
 
 from . import __version__
@@ -48,6 +49,10 @@ def json_request(url):
         return json.loads(plain)
     except json.decoder.JSONDecodeError:
         logger.error("Parsing JSON data retrieved from {0} failed!".format(url))
+
+
+def url_encode(urlstr):
+    return quote_plus(urlstr)
 
 
 def json_str(jsondict):
