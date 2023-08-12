@@ -63,7 +63,7 @@ class Find:
                     return parser_class(doc)
                 return doc
 
-    def url_query(self, query, qtype="default", facet={}, page=0, count=0, sort="", sort_pattern=None, data_format="raw-solr-response", type_num=None):
+    def url_query(self, query, qtype="default", facet={}, page=0, count=0, sort="", data_format="raw-solr-response", type_num=None):
         if qtype not in self.query_types:
             self.logger.warning("Unknown query type!")
             qtype = "default"
@@ -88,7 +88,7 @@ class Find:
                 self.logger.warning("Count exceeds limit!")
                 count = self.count_limit
             url = utils.add_tx_param(url, "count", count)
-        if sort != "" and sort_pattern is not None and not isinstance(sort_pattern.match(sort), re.Match):
+        if sort != "" and self.sort_pattern is not None and not isinstance(self.sort_pattern.match(sort), re.Match):
             self.logger.warning("Unknown sort instruction!")
             sort = ""
         if sort != "":
