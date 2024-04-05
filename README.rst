@@ -5,6 +5,9 @@ txpyfind
 ``txpyfind`` allows to access data exports from TYPO3-find in Python.
 For details regarding the TYPO3-find setup needed to have data exports,
 see the `documentation <https://github.com/subugoe/typo3-find#data-export>`_.
+The three formats ``json-all``, ``json-solr-results``, ``raw-solr-response``
+are already available in the TYPO3 extension, but can be extended, see the
+`partials <https://github.com/subugoe/typo3-find/tree/main/Resources/Private/Partials/Formats>`_.
 
 Installation
 ============
