@@ -2,8 +2,9 @@
 txpyfind
 ========
 
-``txpyfind`` allows to ...
-
+``txpyfind`` allows to access data exports from TYPO3-find in Python.
+For details regarding the TYPO3-find setup needed to have data exports,
+see the `documentation <https://github.com/subugoe/typo3-find#data-export>`_.
 
 Installation
 ============
@@ -28,4 +29,11 @@ Usage Example
 
 .. code-block:: python
 
-   import txpyfind
+   from txpyfind.client import Find
+   # create Find instance
+   slub_find = Find("https://katalog.slub-dresden.de", document_path="id", export_format="json-ld")
+   # retrieve JSON-LD data (detail view)
+   slub_ld_doc = slub_find.get_document("0-1132486122")
+   # retrieve JSON-LD data (query view)
+   slub_ld_q_default = slub_find.get_query("manfred bonitz")
+   # ...
