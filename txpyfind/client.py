@@ -56,7 +56,7 @@ class Find:
                     return parser_class(doc)
                 return doc
 
-    def url_query(self, query, qtype="default", facet={}, page=0, count=0, sort="", data_format="raw-solr-response", type_num=None):
+    def url_query(self, query, qtype="default", facet={}, page=0, count=0, sort="", data_format=None, type_num=None):
         if qtype not in self.query_types:
             self.logger.warning("Unknown query type!")
             qtype = "default"
@@ -88,6 +88,6 @@ class Find:
             url = utils.add_tx_param(url, "sort", utils.url_encode(sort))
         return url
 
-    def get_query(self, query, qtype="default", facet={}, page=0, count=0, sort="", data_format="app", type_num=None):
+    def get_query(self, query, qtype="default", facet={}, page=0, count=0, sort="", data_format=None, type_num=None):
         url = self.url_query(query, qtype=qtype, facet=facet, page=page, count=count, sort=sort, data_format=data_format, type_num=type_num)
         return utils.json_request(url)
