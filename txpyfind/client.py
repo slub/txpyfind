@@ -13,7 +13,8 @@ class Find:
                  count_limit=100,
                  sort_pattern=None,
                  export_format="raw-solr-response",
-                 export_page=1369315139):
+                 export_page=1369315139,
+                 parser_class=parser.JSONResponse):
         self.base_url = base_url
         self.document_path = document_path
         self.query_types = query_types
@@ -26,6 +27,7 @@ class Find:
                 self.base_url, self.document_path)
         self.export_page = export_page
         self.export_format = export_format
+        self.parser_class = parser_class
         self.logger = utils.get_logger("txpyfind.client.Find")
 
     def set_data_params(self, url, data_format=None, type_num=None):
@@ -47,13 +49,15 @@ class Find:
             doc_url = "{0}/{1}".format(self.document_url, doc_id)
             return self.set_data_params(doc_url, data_format=data_format, type_num=type_num)
 
-    def get_document(self, document_id, data_format=None, type_num=None, parser_class=parser.JSONResponse):
+    def get_document(self, document_id, data_format=None, type_num=None, parser_class=None):
         url = self.url_document(document_id, data_format=data_format, type_num=type_num)
         if url is not None:
             doc = utils.plain_request(url)
             if doc is not None:
                 if parser_class is not None:
                     return parser_class(doc)
+                if self.parser_class is not None:
+                    return self.parser_class(doc)
                 return doc
 
     def url_query(self, query, qtype="default", facet={}, page=0, count=0, sort="", data_format=None, type_num=None):
@@ -88,10 +92,12 @@ class Find:
             url = utils.add_tx_param(url, "sort", utils.url_encode(sort))
         return url
 
-    def get_query(self, query, qtype="default", facet={}, page=0, count=0, sort="", data_format=None, type_num=None, parser_class=parser.JSONResponse):
+    def get_query(self, query, qtype="default", facet={}, page=0, count=0, sort="", data_format=None, type_num=None, parser_class=None):
         url = self.url_query(query, qtype=qtype, facet=facet, page=page, count=count, sort=sort, data_format=data_format, type_num=type_num)
         response = utils.plain_request(url)
         if response is not None:
             if parser_class is not None:
                 return parser_class(response)
+            if self.parser_class is not None:
+                return self.parser_class(response)
             return response
