@@ -1,11 +1,19 @@
 import html
+import json
 
+from . import utils
 
 class JSONResponse:
 
-    def __init__(self, raw):
-        self.raw = raw
-        self.fields = self._names(raw=raw)
+    def __init__(self, plain):
+        self.plain = plain
+        self.logger = utils.get_logger("txpyfind.parser.JSONResponse")
+        try:
+            self.raw = json.loads(plain)
+        except json.decoder.JSONDecodeError as err:
+            self.logger.error(err)
+            self.raw = None
+        self.fields = self._names(raw=self.raw)
 
     def _names(self, raw=None):
         if raw is None:
