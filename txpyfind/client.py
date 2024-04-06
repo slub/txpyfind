@@ -88,6 +88,10 @@ class Find:
             url = utils.add_tx_param(url, "sort", utils.url_encode(sort))
         return url
 
-    def get_query(self, query, qtype="default", facet={}, page=0, count=0, sort="", data_format=None, type_num=None):
+    def get_query(self, query, qtype="default", facet={}, page=0, count=0, sort="", data_format=None, type_num=None, parser_class=None):
         url = self.url_query(query, qtype=qtype, facet=facet, page=page, count=count, sort=sort, data_format=data_format, type_num=type_num)
-        return utils.json_request(url)
+        response = utils.json_request(url)
+        if response is not None:
+            if parser_class is not None:
+                return parser_class(response)
+            return response
