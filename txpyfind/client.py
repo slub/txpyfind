@@ -104,12 +104,6 @@ class Find:
             return response
 
     def get_query_via_url(self, url, data_format=None, type_num=None, parser_class=None):
-        query_details = urlparse.get_query(url)
-        if len(query_details) > 1:
-            query = query_details[1]
-            qtype = query_details[0]
-            facet = urlparse.get_facets(url)
-            page = urlparse.get_page(url)
-            count = urlparse.get_count(url)
-            sort = urlparse.get_sort(url)
-            return self.get_query(query, qtype=qtype, facet=facet, page=page, count=count, sort=sort, data_format=data_format, type_num=type_num, parser_class=parser_class)
+        url = urlparse.URLParser(url)
+        if url.ok:
+            return self.get_query(url.query, qtype=url.qtype, facet=url.facets, page=url.page, count=url.count, sort=url.sort, data_format=data_format, type_num=type_num, parser_class=parser_class)

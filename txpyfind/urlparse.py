@@ -9,6 +9,23 @@ PAGE = re.compile("tx_find_find\[page\]=(\d*)&?")
 COUNT = re.compile("tx_find_find\[count\]=(\d*)&?")
 SORT = re.compile("tx_find_find\[sort\]=([a-zA-Z]*)[+ ]([a-zA-Z]*)&?")
 
+
+class URLParser:
+
+    def __init__(self, url):
+        self.url = url
+        query_details = get_query(url)
+        self.ok = False
+        if len(query_details) > 1:
+            self.query = query_details[1]
+            self.qtype = query_details[0]
+            self.ok = True
+        self.facets = get_facets(url)
+        self.page = get_page(url)
+        self.count = get_count(url)
+        self.sort = get_sort(url)
+
+
 def preserve_ampersand(url):
     amps = QUERY_AMP.findall(url)
     if len(amps) == 1:
