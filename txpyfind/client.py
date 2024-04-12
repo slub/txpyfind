@@ -1,6 +1,7 @@
 import re
 from . import utils
 from . import parser
+from . import urlparse
 
 
 class Find:
@@ -101,3 +102,14 @@ class Find:
             if self.parser_class is not None:
                 return self.parser_class(response)
             return response
+
+    def get_query_via_url(self, url, data_format=None, type_num=None, parser_class=None):
+        query_details = urlparse.get_query(url)
+        if len(query_details) > 1:
+            query = query_details[1]
+            qtype = query_details[0]
+            facet = urlparse.get_facets(url)
+            page = urlparse.get_page(url)
+            count = urlparse.get_count(url)
+            sort = urlparse.get_sort(url)
+            return self.get_query(query, qtype=qtype, facet=facet, page=page, count=count, sort=sort, data_format=data_format, type_num=type_num, parser_class=parser_class)
