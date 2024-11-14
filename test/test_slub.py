@@ -20,3 +20,17 @@ def test_get_query():
    assert '@graph' in slub_ld_doc.raw
    assert any(slub_ld_doc.raw['@graph'])
    assert '@id' in slub_ld_doc.raw['@graph'][0]
+
+def test_pagination():
+   # create Find instance
+   slub_find = Find("https://katalog.slub-dresden.de", document_path="id")
+   # scroll SOLR JSON data (query view + pagination)
+   slub_solr_docs = slub_find.scroll_get_query("manfred bonitz", batch=10)
+   assert slub_solr_docs is not None
+   assert len(slub_solr_docs) > 0
+   # stream SOLR JSON data (query view + pagination)
+   slub_solr_docs2 = []
+   for doc in slub_find.stream_get_query("manfred bonitz", batch=10):
+      slub_solr_docs2.append(doc)
+   assert len(slub_solr_docs2) > 0
+   assert len(slub_solr_docs) == len(slub_solr_docs2)
