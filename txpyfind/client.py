@@ -45,6 +45,21 @@ class Find:
             type_num = self.export_page
         return utils.add_tx_param_data(url, data_format=data_format, type_num=type_num)
 
+    def add_facet_params(self, url, facet={}):
+        for f in facet:
+            if isinstance(f, str):
+                if f not in self.facets:
+                    self.logger.warning(f"Unknown facet type {f}!")
+                    continue
+                url = utils.add_tx_param(url, ["facet", f, utils.url_encode(facet[f])], 1)
+            elif isinstance(f, dict):
+                for k in f:
+                    if k not in self.facets:
+                        self.logger.warning(f"Unknown facet type {k}!")
+                        continue
+                    url = utils.add_tx_param(url, ["facet", k, utils.url_encode(f[k])], 1)
+        return url
+
     def url_document(self, doc_id, data_format=None, type_num=None):
         if self.document_url is not None:
             doc_url = "{0}/{1}".format(self.document_url, doc_id)
@@ -67,18 +82,7 @@ class Find:
             qtype = "default"
         url = utils.set_tx_param(self.base_url, ["q", qtype], utils.url_encode(query))
         url = self.add_data_params(url, data_format=data_format, type_num=type_num)
-        for f in facet:
-            if isinstance(f, str):
-                if f not in self.facets:
-                    self.logger.warning(f"Unknown facet type {f}!")
-                    continue
-                url = utils.add_tx_param(url, ["facet", f, utils.url_encode(facet[f])], 1)
-            elif isinstance(f, dict):
-                for k in f:
-                    if k not in self.facets:
-                        self.logger.warning(f"Unknown facet type {k}!")
-                        continue
-                    url = utils.add_tx_param(url, ["facet", k, utils.url_encode(f[k])], 1)
+        url = self.add_facet_params(url, facet=facet)
         if page:
             url = utils.add_tx_param(url, "page", page)
         if count:
