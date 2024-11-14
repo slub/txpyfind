@@ -39,8 +39,8 @@ def test_pagination():
    assert slub_solr_docs is not None
    assert len(slub_solr_docs) > 0
    # stream SOLR JSON data (query view + pagination)
-   slub_solr_docs2 = []
-   for doc in slub_find.stream_get_query("manfred bonitz", batch=10):
-      slub_solr_docs2.append(doc)
+   slub_solr_docs2 = slub_find.stream_get_query("manfred bonitz", batch=10)
+   assert slub_solr_docs2 is not None
+   slub_solr_docs2 = list(slub_solr_docs2)
    assert len(slub_solr_docs2) > 0
    assert len(slub_solr_docs) == len(slub_solr_docs2)
