@@ -68,12 +68,12 @@ class Find:
         url = utils.set_tx_param(self.base_url, ["q", qtype], utils.url_encode(query))
         url = self.add_data_params(url, data_format=data_format, type_num=type_num)
         for f in facet:
-            if type(f) == str:
+            if isinstance(f, str):
                 if f not in self.facets:
                     self.logger.warning(f"Unknown facet type {f}!")
                     continue
                 url = utils.add_tx_param(url, ["facet", f, utils.url_encode(facet[f])], 1)
-            elif type(f) == dict:
+            elif isinstance(f, dict):
                 for k in f:
                     if k not in self.facets:
                         self.logger.warning(f"Unknown facet type {k}!")
@@ -93,8 +93,10 @@ class Find:
             url = utils.add_tx_param(url, "sort", utils.url_encode(sort))
         return url
 
-    def get_query(self, query, qtype="default", facet={}, page=0, count=0, sort="", data_format=None, type_num=None, parser_class=None):
-        url = self.url_query(query, qtype=qtype, facet=facet, page=page, count=count, sort=sort, data_format=data_format, type_num=type_num)
+    def get_query(self, query, qtype="default", facet={}, page=0, count=0, sort="",
+                  data_format=None, type_num=None, parser_class=None):
+        url = self.url_query(query, qtype=qtype, facet=facet, page=page, count=count, sort=sort,
+                             data_format=data_format, type_num=type_num)
         response = utils.plain_request(url)
         if response is not None:
             if parser_class is not None:
@@ -106,4 +108,5 @@ class Find:
     def get_query_via_url(self, url, data_format=None, type_num=None, parser_class=None):
         url = urlparse.URLParser(url)
         if url.ok:
-            return self.get_query(url.query, qtype=url.qtype, facet=url.facets, page=url.page, count=url.count, sort=url.sort, data_format=data_format, type_num=type_num, parser_class=parser_class)
+            return self.get_query(url.query, qtype=url.qtype, facet=url.facets, page=url.page, count=url.count, sort=url.sort,
+                                  data_format=data_format, type_num=type_num, parser_class=parser_class)

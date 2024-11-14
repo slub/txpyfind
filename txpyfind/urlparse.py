@@ -1,13 +1,13 @@
 import re
 from urllib.parse import unquote_plus as unquote
 
-QUERY = re.compile("tx_find_find\[q\]\[([^]]*)\]=([^&]*)")
-QUERY_AMP = re.compile("=([^&]*%26[^&]*)")
+QUERY = re.compile(r"tx_find_find\[q\]\[([^]]*)\]=([^&]*)")
+QUERY_AMP = re.compile(r"=([^&]*%26[^&]*)")
 SUBSTITUTE = "%#"
-FACET = re.compile("tx_find_find\[facet\]\[([^]]*)\]\[([^]]*)\]=1&?")
-PAGE = re.compile("tx_find_find\[page\]=(\d*)&?")
-COUNT = re.compile("tx_find_find\[count\]=(\d*)&?")
-SORT = re.compile("tx_find_find\[sort\]=([a-zA-Z]*)[+ ]([a-zA-Z]*)&?")
+FACET = re.compile(r"tx_find_find\[facet\]\[([^]]*)\]\[([^]]*)\]=1&?")
+PAGE = re.compile(r"tx_find_find\[page\]=(\d*)&?")
+COUNT = re.compile(r"tx_find_find\[count\]=(\d*)&?")
+SORT = re.compile(r"tx_find_find\[sort\]=([a-zA-Z]*)[+ ]([a-zA-Z]*)&?")
 
 
 class URLParser:
