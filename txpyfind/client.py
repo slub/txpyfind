@@ -120,8 +120,8 @@ class Find:
         if data_format is None:
             data_format = self.export_format
         if data_format != "raw-solr-response":
-            self.logger.error("Scrolling only supports data format of type 'raw-solr-response'!")
-            return None
+            self.logger.warning("Scrolling only supports data format of type 'raw-solr-response'!")
+            data_format = "raw-solr-response"
         response = self.get_query(query, qtype=qtype, facet=facet, sort=sort, data_format=data_format,
                                   type_num=type_num, parser_class=parser_class)
         if hasattr(response, "raw") and isinstance(response.raw, dict) and "response" in response.raw:
@@ -148,8 +148,8 @@ class Find:
         if data_format is None:
             data_format = self.export_format
         if data_format != "raw-solr-response":
-            self.logger.error("Streaming only supports data format of type 'raw-solr-response'!")
-            return None
+            self.logger.warning("Streaming only supports data format of type 'raw-solr-response'!")
+            data_format = "raw-solr-response"
         response = self.get_query(query, qtype=qtype, facet=facet, sort=sort, data_format=data_format,
                                   type_num=type_num, parser_class=parser_class)
         if not hasattr(response, "raw") or not isinstance(response.raw, dict) or "response" not in response.raw:
