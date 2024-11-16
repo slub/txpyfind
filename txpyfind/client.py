@@ -24,8 +24,7 @@ class Find:
         self.sort_pattern = sort_pattern
         self.document_url = None
         if document_path is not None:
-            self.document_url = "{0}/{1}".format(
-                self.base_url, self.document_path)
+            self.document_url = f"{self.base_url}/{self.document_path}"
         self.export_page = export_page
         self.export_format = export_format
         self.parser_class = parser_class
@@ -62,7 +61,7 @@ class Find:
 
     def url_document(self, doc_id, data_format=None, type_num=None):
         if self.document_url is not None:
-            doc_url = "{0}/{1}".format(self.document_url, doc_id)
+            doc_url = f"{self.document_url}/{doc_id}"
             return self.set_data_params(doc_url, data_format=data_format, type_num=type_num)
 
     def get_document(self, document_id, data_format=None, type_num=None, parser_class=None):
