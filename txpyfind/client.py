@@ -48,13 +48,13 @@ class Find:
         for f in facet:
             if isinstance(f, str):
                 if f not in self.facets:
-                    self.logger.warning(f"Unknown facet type {f}!")
+                    self.logger.warning("Unknown facet type %s!", f)
                     continue
                 url = utils.add_tx_param(url, ["facet", f, utils.url_encode(facet[f])], 1)
             elif isinstance(f, dict):
                 for k in f:
                     if k not in self.facets:
-                        self.logger.warning(f"Unknown facet type {k}!")
+                        self.logger.warning("Unknown facet type %s!", k)
                         continue
                     url = utils.add_tx_param(url, ["facet", k, utils.url_encode(f[k])], 1)
         return url
@@ -86,11 +86,11 @@ class Find:
             url = utils.add_tx_param(url, "page", page)
         if count:
             if count > self.count_limit:
-                self.logger.warning(f"Count {count} exceeds limit!")
+                self.logger.warning("Count %d exceeds limit!", count)
                 count = self.count_limit
             url = utils.add_tx_param(url, "count", count)
         if sort != "" and self.sort_pattern is not None and not isinstance(self.sort_pattern.match(sort), re.Match):
-            self.logger.warning(f"Sort instruction {sort} is unknown!")
+            self.logger.warning("Sort instruction %s is unknown!", sort)
             sort = ""
         if sort != "":
             url = utils.add_tx_param(url, "sort", utils.url_encode(sort))
@@ -137,8 +137,8 @@ class Find:
                         for doc in data_i["docs"]:
                             docs.append(doc)
             if total != len(docs):
-                self.logger.warning(f"Expected {total} record{'s' if total != 1 else ''} for query {query}. "
-                                    f"Got {len(docs)} record{'s' if len(docs) != 1 else ''}.")
+                self.logger.warning("Expected %d record%s for query %s. Got %d record%s.",
+                                    total, 's' if total != 1 else '', query, len(docs), 's' if len(docs) != 1 else '')
             return docs
 
     def stream_get_query(self, query, qtype="default", facet={}, batch=20, sort="", data_format="raw-solr-response",

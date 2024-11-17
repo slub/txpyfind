@@ -21,14 +21,13 @@ def get_logger(name, loglevel=logging.WARNING):
 def get_request(url):
     logger = get_logger("txpyfind.utils.get_request")
     req = Request(url)
-    req.add_header("User-Agent", "txpyfind {0}".format(__version__))
+    req.add_header("User-Agent", f"txpyfind {__version__}")
     try:
         with urlopen(req) as response:
             if response.code == 200:
                 return response.read()
             else:
-                logger.error("HTTP request to {0} failed!".format(url))
-                logger.error("HTTP response code is {0}.".format(response.code))
+                logger.error("HTTP %d GET %s", response.code, url)
     except Exception as e:
         logger.error(e)
 
@@ -48,7 +47,7 @@ def json_request(url):
     try:
         return json.loads(plain)
     except json.decoder.JSONDecodeError:
-        logger.error("Parsing JSON data retrieved from {0} failed!".format(url))
+        logger.error("Got faulty JSON from URL %s", url)
 
 
 def url_encode(urlstr):
@@ -64,27 +63,27 @@ def json_str_pretty(jsondict, indent=2):
 
 
 def add_param(url, key, value=None):
-    url = "{0}&{1}".format(url, key)
+    url = f"{url}&{key}"
     if value is not None:
-        url = "{0}={1}".format(url, value)
+        url = f"{url}={value}"
     return url
 
 
 def set_param(url, key, value=None):
-    url = "{0}?{1}".format(url, key)
+    url = f"{url}?{key}"
     if value is not None:
-        url = "{0}={1}".format(url, value)
+        url = f"{url}={value}"
     return url
 
 
 def tx_param(key, index=None):
     if isinstance(key, str):
-        k = "[{}]".format(key)
+        k = f"[{key}]"
     else:
-        k = "".join("[{0}]".format(k) for k in key)
+        k = "".join(f"[{k}]" for k in key)
     if isinstance(index, int):
-        k += "[{0}]".format(index)
-    return "tx_find_find{0}".format(k)
+        k += f"[{index}]"
+    return f"tx_find_find{k}"
 
 
 def add_tx_param(url, key, value, index=None):
@@ -96,7 +95,7 @@ def set_tx_param(url, key, value, index=None):
 
 
 def tx_param_data(data_format, type_num=1369315139):
-    param = "{0}={1}".format(tx_param("format"), "data")
+    param = f"{tx_param('format')}=data"
     param = add_tx_param(param, "data-format", data_format)
     return add_param(param, "type", type_num)
 

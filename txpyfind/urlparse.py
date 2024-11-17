@@ -98,5 +98,5 @@ def get_count(url):
 def get_sort(url):
     sort = find_sort(url)
     if len(sort) > 0:
-        return "{0} {1}".format(sort[0][0], sort[0][1])
+        return f"{sort[0][0]} {sort[0][1]}"
     return ""
