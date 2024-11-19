@@ -137,9 +137,10 @@ class Find:
                     if "docs" in data_i:
                         for doc in data_i["docs"]:
                             docs.append(doc)
-            if total != len(docs):
+            found = len(docs)
+            if total != found:
                 self.logger.warning("Expected %d record%s for query %s. Got %d record%s.",
-                                    total, 's' if total != 1 else '', query, len(docs), 's' if len(docs) != 1 else '')
+                                    total, 's' if total != 1 else '', query, found, 's' if found != 1 else '')
             return docs
 
     def stream_get_query(self, query, qtype="default", facet={}, batch=20, sort="", data_format="raw-solr-response",
