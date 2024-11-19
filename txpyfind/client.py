@@ -1,4 +1,5 @@
 import re
+import logging
 from . import utils
 from . import parser
 from . import urlparse
@@ -28,7 +29,7 @@ class Find:
         self.export_page = export_page
         self.export_format = export_format
         self.parser_class = parser_class
-        self.logger = utils.get_logger("txpyfind.client.Find")
+        self.logger = logging.getLogger(f"{__name__}.{self.__class__.__name__}")
 
     def set_data_params(self, url, data_format=None, type_num=None):
         if data_format is None:

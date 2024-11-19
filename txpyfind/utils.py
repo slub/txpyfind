@@ -1,4 +1,5 @@
 import json
+import inspect
 import logging
 from urllib.parse import quote_plus
 from urllib.request import Request, urlopen
@@ -6,20 +7,8 @@ from urllib.request import Request, urlopen
 from . import __version__
 
 
-def get_logger(name, loglevel=logging.WARNING):
-    logger = logging.getLogger(name)
-    if not logger.handlers:
-        stream = logging.StreamHandler()
-        stream.setLevel(loglevel)
-        stream.setFormatter(logging.Formatter("%(asctime)s [%(levelname)s] %(name)s: %(message)s", "%Y-%m-%d %H:%M:%S"))
-        logger.addHandler(stream)
-    if logger.level != loglevel:
-        logger.setLevel(loglevel)
-    return logger
-
-
 def get_request(url):
-    logger = get_logger("txpyfind.utils.get_request")
+    logger = logging.getLogger(f"{__name__}.{inspect.currentframe().f_code.co_name}")
     req = Request(url)
     req.add_header("User-Agent", f"txpyfind {__version__}")
     try:
@@ -33,21 +22,23 @@ def get_request(url):
 
 
 def plain_request(url):
-    logger = get_logger("txpyfind.utils.plain_request")
     payload = get_request(url)
-    try:
-        return payload.decode()
-    except Exception as e:
-        logger.error(e)
+    if isinstance(payload, bytes):
+        try:
+            return payload.decode()
+        except Exception as e:
+            logger = logging.getLogger(f"{__name__}.{inspect.currentframe().f_code.co_name}")
+            logger.error(e)
 
 
 def json_request(url):
-    logger = get_logger("txpyfind.utils.json_request")
     plain = plain_request(url)
-    try:
-        return json.loads(plain)
-    except json.decoder.JSONDecodeError:
-        logger.error("Got faulty JSON from URL %s", url)
+    if isinstance(plain, str):
+        try:
+            return json.loads(plain)
+        except json.decoder.JSONDecodeError:
+            logger = logging.getLogger(f"{__name__}.{inspect.currentframe().f_code.co_name}")
+            logger.error("Got faulty JSON from URL %s", url)
 
 
 def url_encode(urlstr):

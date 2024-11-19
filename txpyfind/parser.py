@@ -1,14 +1,13 @@
 import html
 import json
-
-from . import utils
+import logging
 
 
 class JSONResponse:
 
     def __init__(self, plain):
         self.plain = plain
-        self.logger = utils.get_logger("txpyfind.parser.JSONResponse")
+        self.logger = logging.getLogger(f"{__name__}.{self.__class__.__name__}")
         try:
             self.raw = json.loads(plain)
         except json.decoder.JSONDecodeError as err:
