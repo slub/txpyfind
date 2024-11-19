@@ -1,5 +1,4 @@
 import json
-import inspect
 import logging
 from urllib.parse import quote_plus
 from urllib.request import Request, urlopen
@@ -7,8 +6,10 @@ from urllib.request import Request, urlopen
 from ._version import __version__
 
 
+logger = logging.getLogger(__name__)
+
+
 def get_request(url):
-    logger = logging.getLogger(f"{__name__}.{inspect.currentframe().f_code.co_name}")
     req = Request(url)
     req.add_header("User-Agent", f"txpyfind {__version__}")
     try:
@@ -27,7 +28,6 @@ def plain_request(url):
         try:
             return payload.decode()
         except Exception as e:
-            logger = logging.getLogger(f"{__name__}.{inspect.currentframe().f_code.co_name}")
             logger.error(e)
 
 
@@ -37,7 +37,6 @@ def json_request(url):
         try:
             return json.loads(plain)
         except json.decoder.JSONDecodeError:
-            logger = logging.getLogger(f"{__name__}.{inspect.currentframe().f_code.co_name}")
             logger.error("Got faulty JSON from URL %s", url)
 
 
