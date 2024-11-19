@@ -4,7 +4,7 @@ import logging
 from urllib.parse import quote_plus
 from urllib.request import Request, urlopen
 
-from . import __version__
+from ._version import __version__
 
 
 def get_request(url):
