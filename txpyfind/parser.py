@@ -1,9 +1,15 @@
+"""
+parser module of ``txpyfind`` package
+"""
 import html
 import json
 import logging
 
 
 class JSONResponse:
+    """
+    JSONResponse class from ``txpyfind`` package
+    """
 
     def __init__(self, plain):
         self.plain = plain
@@ -15,23 +21,24 @@ class JSONResponse:
             self.raw = None
         self.fields = self._names(raw=self.raw)
 
-    def _names(self, raw=None):
+    def _names(self, raw = None):
         if raw is None:
             raw = self.raw
         if isinstance(raw, dict):
             return list(raw.keys())
         return []
 
-    def _field(self, name, raw=None):
+    def _field(self, name, raw = None):
         if raw is None:
             raw = self.raw
         if isinstance(raw, dict) and name in raw:
             return self._unescape(raw[name])
+        return None
 
     def _unescape(self, value):
         if isinstance(value, str):
             return html.unescape(value.strip())
-        elif isinstance(value, list) and len(value) > 0 and all(isinstance(v, str) and len(v.strip()) > 0 for v in value):
+        if isinstance(value, list) and len(value) > 0 and \
+                all(isinstance(v, str) and len(v.strip()) > 0 for v in value):
             return [html.unescape(v.strip()) for v in value]
-        else:
-            return value
+        return value
