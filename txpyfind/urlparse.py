@@ -15,7 +15,7 @@ SORT = re.compile(r"tx_find_find\[sort\]=([a-zA-Z]*)[+ ]([a-zA-Z]*)&?")
 
 class URLParser:
     """
-    URLParser class of ``txpyfind`` package
+    ``URLParser`` class from ``txpyfind.urlparse`` module
     """
 
     def __init__(self, url):
@@ -45,7 +45,7 @@ def preserve_ampersand(url):
 
 def find_query(url):
     """
-    find ``query`` in given URL
+    find query parameter in given URL
     """
     url, ampersand = preserve_ampersand(url)
     url = unquote(url)
@@ -58,35 +58,35 @@ def find_query(url):
 
 def find_facets(url):
     """
-    find ``facets`` in given URL
+    find facet parameters in given URL
     """
     return FACET.findall(unquote(url))
 
 
 def find_page(url):
     """
-    find ``page`` in given URL
+    find page parameter in given URL
     """
     return PAGE.findall(unquote(url))
 
 
 def find_count(url):
     """
-    find ``count`` in given URL
+    find count parameter in given URL
     """
     return COUNT.findall(unquote(url))
 
 
 def find_sort(url):
     """
-    find ``sort`` in given URL
+    find sort parameter in given URL
     """
     return SORT.findall(unquote(url))
 
 
 def get_query(url):
     """
-    get ``query`` from given URL
+    get query parameter from given URL
     """
     query = find_query(url)
     if len(query) == 1:
@@ -100,7 +100,7 @@ def get_query(url):
 
 def get_facets(url):
     """
-    get ``facets`` from given URL
+    get facet parameters from given URL
     """
     facets = find_facets(url)
     if len(facets) > 0:
@@ -113,7 +113,7 @@ def get_facets(url):
 
 def get_page(url):
     """
-    get ``page`` from given URL
+    get page parameter from given URL
     """
     page = find_page(url)
     if len(page) == 1:
@@ -123,7 +123,7 @@ def get_page(url):
 
 def get_count(url):
     """
-    get ``count`` from given URL
+    get count parameter from given URL
     """
     count = find_count(url)
     if len(count) > 0:
@@ -133,7 +133,7 @@ def get_count(url):
 
 def get_sort(url):
     """
-    get ``sort`` from given URL
+    get sort parameter from given URL
     """
     sort = find_sort(url)
     if len(sort) > 0:

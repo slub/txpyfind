@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 def get_request(url):
     """
-    get_request
+    send HTTP GET request to given URL
     """
     req = Request(url)
     req.add_header("User-Agent", f"txpyfind {__version__}")
@@ -30,7 +30,7 @@ def get_request(url):
 
 def plain_request(url):
     """
-    plain_request
+    request data in plain text format from given URL
     """
     payload = get_request(url)
     if isinstance(payload, bytes):
@@ -43,7 +43,7 @@ def plain_request(url):
 
 def json_request(url):
     """
-    json_request
+    request data in JSON format from given URL
     """
     plain = plain_request(url)
     if isinstance(plain, str):
@@ -54,40 +54,16 @@ def json_request(url):
     return None
 
 
-def url_encode(urlstr):
+def url_encode(url):
     """
-    url_encode
+    encode given URL
     """
-    return quote_plus(urlstr)
-
-
-def json_str(jsondict):
-    """
-    json_str
-    """
-    return json.dumps(jsondict)
-
-
-def json_str_pretty(jsondict, indent = 2):
-    """
-    json_str_pretty
-    """
-    return json.dumps(jsondict, indent=indent)
-
-
-def add_param(url, key, value = None):
-    """
-    add_param
-    """
-    url = f"{url}&{key}"
-    if value is not None:
-        url = f"{url}={value}"
-    return url
+    return quote_plus(url)
 
 
 def set_param(url, key, value = None):
     """
-    set_param
+    add initial parameter to given URL
     """
     url = f"{url}?{key}"
     if value is not None:
@@ -95,9 +71,19 @@ def set_param(url, key, value = None):
     return url
 
 
+def add_param(url, key, value = None):
+    """
+    add subsequent parameter to given URL
+    """
+    url = f"{url}&{key}"
+    if value is not None:
+        url = f"{url}={value}"
+    return url
+
+
 def tx_param(key, index = None):
     """
-    tx_param
+    create URL parameter for TYPO3-find
     """
     if isinstance(key, str):
         k = f"[{key}]"
@@ -108,38 +94,38 @@ def tx_param(key, index = None):
     return f"tx_find_find{k}"
 
 
-def add_tx_param(url, key, value, index = None):
-    """
-    add_tx_param
-    """
-    return add_param(url, tx_param(key,  index=index), value)
-
-
 def set_tx_param(url, key, value, index = None):
     """
-    set_tx_param
+    add TYPO3-find parameter as initial parameter to given URL
     """
     return set_param(url, tx_param(key, index=index), value)
 
 
+def add_tx_param(url, key, value, index = None):
+    """
+    add TYPO3-find parameter as subsequent parameter to given URL
+    """
+    return add_param(url, tx_param(key,  index=index), value)
+
+
 def tx_param_data(data_format, type_num = 1369315139):
     """
-    tx_param_data
+    create parameters for TYPO3-find data exports
     """
     param = f"{tx_param('format')}=data"
     param = add_tx_param(param, "data-format", data_format)
     return add_param(param, "type", type_num)
 
 
-def add_tx_param_data(url, data_format, type_num = 1369315139):
-    """
-    add_tx_param_data
-    """
-    return add_param(url, tx_param_data(data_format, type_num=type_num))
-
-
 def set_tx_param_data(url, data_format, type_num = 1369315139):
     """
-    set_tx_param_data
+    add parameters for TYPO3-find data exports as initial parameters to given URL
     """
     return set_param(url, tx_param_data(data_format, type_num=type_num))
+
+
+def add_tx_param_data(url, data_format, type_num = 1369315139):
+    """
+    add parameters for TYPO3-find data exports as subsequent parameters to given URL
+    """
+    return add_param(url, tx_param_data(data_format, type_num=type_num))

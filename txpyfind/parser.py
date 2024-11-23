@@ -8,7 +8,7 @@ import logging
 
 class JSONResponse:
     """
-    JSONResponse class from ``txpyfind`` package
+    ``JSONResponse`` class from ``txpyfind.parser`` module
     """
 
     def __init__(self, plain):

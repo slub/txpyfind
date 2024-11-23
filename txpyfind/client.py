@@ -10,7 +10,7 @@ from . import urlparse
 
 class Find:
     """
-    Find class from ``txpyfind.client`` module
+    ``Find`` class from ``txpyfind.client`` module
     """
 
     def __init__(
@@ -46,7 +46,7 @@ class Find:
             data_format = None,
             type_num = None):
         """
-        set_data_params
+        add data exports parameters as initial parameters to given URL
         """
         if data_format is None:
             data_format = self.export_format
@@ -63,7 +63,7 @@ class Find:
             data_format = None,
             type_num = None):
         """
-        add_data_params
+        add data exports parameters as subsequent parameters to given URL
         """
         if data_format is None:
             data_format = self.export_format
@@ -79,7 +79,7 @@ class Find:
             url,
             facet = None):
         """
-        add_facet_params
+        add facet parameters as subsequent parameters to given URL
         """
         if facet is not None:
             for fct in facet:
@@ -102,7 +102,7 @@ class Find:
             data_format = None,
             type_num = None):
         """
-        url_document
+        get the URL for the detail view of the document given by id
         """
         if self.document_url is not None:
             doc_url = f"{self.document_url}/{doc_id}"
@@ -119,7 +119,7 @@ class Find:
             type_num = None,
             parser_class = None):
         """
-        get_document
+        get the detail view of the document given by id
         """
         url = self.url_document(
             document_id,
@@ -146,7 +146,7 @@ class Find:
             data_format = None,
             type_num = None):
         """
-        url_query
+        get the URL for the query view
         """
         if qtype not in self.query_types:
             self.logger.warning("Unknown query type!")
@@ -181,7 +181,7 @@ class Find:
             type_num = None,
             parser_class = None):
         """
-        get_query
+        get query view
         """
         url = self.url_query(
             query,
@@ -208,7 +208,7 @@ class Find:
             type_num = None,
             parser_class = None):
         """
-        get_query_via_url
+        get query view via url
         """
         url = urlparse.URLParser(url)
         if url.is_ok:
@@ -235,7 +235,7 @@ class Find:
             type_num = None,
             parser_class = None):
         """
-        scroll_get_query
+        get all pages of a query view
         """
         if data_format is None:
             data_format = self.export_format
@@ -276,9 +276,9 @@ class Find:
                             docs.append(doc)
             found = len(docs)
             if total != found:
-                self.logger.warning("Expected %d record%s for query %s. Got %d record%s.",
-                                    total, 's' if total != 1 else '', query, found,
-                                    's' if found != 1 else '')
+                self.logger.warning(
+                    "Expected %d record%s for query %s. Got %d record%s.",
+                    total, 's' if total != 1 else '', query, found, 's' if found != 1 else '')
             return docs
         return None
 
@@ -293,7 +293,7 @@ class Find:
             type_num = None,
             parser_class = None):
         """
-        stream pages query view
+        iterate all pages of a query view
         """
         if data_format is None:
             data_format = self.export_format
@@ -303,14 +303,14 @@ class Find:
             data_format = "raw-solr-response"
         response = self.get_query(
             query,
-            qtype=qtype,
-            facet=facet,
-            sort=sort,
-            data_format=data_format,
-            type_num=type_num,
-            parser_class=parser_class)
-        if hasattr(response, "raw") and isinstance(response.raw, dict) \
-                and "response" in response.raw:
+            qtype = qtype,
+            facet = facet,
+            sort = sort,
+            data_format = data_format,
+            type_num = type_num,
+            parser_class = parser_class)
+        if hasattr(response, "raw") and isinstance(
+                response.raw, dict) and "response" in response.raw:
             data = response.raw["response"]
             total = data["numFound"]
             pages = int(total / batch) + (total % batch > 0)
