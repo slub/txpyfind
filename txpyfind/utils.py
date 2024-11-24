@@ -61,7 +61,7 @@ def url_encode(url):
     return quote_plus(url)
 
 
-def set_param(url, key, value = None):
+def set_param(url, key, value=None):
     """
     add initial parameter to given URL
     """
@@ -71,7 +71,7 @@ def set_param(url, key, value = None):
     return url
 
 
-def add_param(url, key, value = None):
+def add_param(url, key, value=None):
     """
     add subsequent parameter to given URL
     """
@@ -81,7 +81,7 @@ def add_param(url, key, value = None):
     return url
 
 
-def tx_param(key, index = None):
+def tx_param(key, index=None):
     """
     create URL parameter for TYPO3-find
     """
@@ -94,21 +94,21 @@ def tx_param(key, index = None):
     return f"tx_find_find{k}"
 
 
-def set_tx_param(url, key, value, index = None):
+def set_tx_param(url, key, value, index=None):
     """
     add TYPO3-find parameter as initial parameter to given URL
     """
     return set_param(url, tx_param(key, index=index), value)
 
 
-def add_tx_param(url, key, value, index = None):
+def add_tx_param(url, key, value, index=None):
     """
     add TYPO3-find parameter as subsequent parameter to given URL
     """
     return add_param(url, tx_param(key,  index=index), value)
 
 
-def tx_param_data(data_format, type_num = 1369315139):
+def tx_param_data(data_format, type_num=1369315139):
     """
     create parameters for TYPO3-find data exports
     """
@@ -117,14 +117,14 @@ def tx_param_data(data_format, type_num = 1369315139):
     return add_param(param, "type", type_num)
 
 
-def set_tx_param_data(url, data_format, type_num = 1369315139):
+def set_tx_param_data(url, data_format, type_num=1369315139):
     """
     add parameters for TYPO3-find data exports as initial parameters to given URL
     """
     return set_param(url, tx_param_data(data_format, type_num=type_num))
 
 
-def add_tx_param_data(url, data_format, type_num = 1369315139):
+def add_tx_param_data(url, data_format, type_num=1369315139):
     """
     add parameters for TYPO3-find data exports as subsequent parameters to given URL
     """

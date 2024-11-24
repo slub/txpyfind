@@ -21,14 +21,14 @@ class JSONResponse:
             self.raw = None
         self.fields = self._names(raw=self.raw)
 
-    def _names(self, raw = None):
+    def _names(self, raw=None):
         if raw is None:
             raw = self.raw
         if isinstance(raw, dict):
             return list(raw.keys())
         return []
 
-    def _field(self, name, raw = None):
+    def _field(self, name, raw=None):
         if raw is None:
             raw = self.raw
         if isinstance(raw, dict) and name in raw:
