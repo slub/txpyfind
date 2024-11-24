@@ -327,5 +327,4 @@ class Find:
                         response_i.raw, dict) and "response" in response_i.raw:
                     data_i = response_i.raw["response"]
                     if "docs" in data_i:
-                        for doc in data_i["docs"]:
-                            yield doc
+                        yield from data_i["docs"]
