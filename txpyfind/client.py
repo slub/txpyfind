@@ -96,6 +96,9 @@ class Find:
                         url = utils.add_tx_param(url, ["facet", k, utils.url_encode(fct[k])], 1)
         return url
 
+    def url_parser(self, url):
+        return urlparse.URLParser(url)
+
     def url_document(
             self,
             doc_id,
@@ -210,7 +213,7 @@ class Find:
         """
         get query view via url
         """
-        url = urlparse.URLParser(url)
+        url = self.url_parser(url)
         if url.is_ok:
             return self.get_query(
                 url.query,
