@@ -4,8 +4,8 @@ client module of ``txpyfind`` package
 import re
 import logging
 from . import utils
-from . import parser
-from . import urlparse
+from .parser import JSONResponse
+from .urlparse import URLParser
 
 
 class Find:
@@ -23,7 +23,7 @@ class Find:
             sort_pattern=None,
             export_format="raw-solr-response",
             export_page=1369315139,
-            parser_class=parser.JSONResponse):
+            parser_class=JSONResponse):
         self.base_url = base_url
         self.document_path = document_path
         if query_types is None:
@@ -97,7 +97,7 @@ class Find:
         return url
 
     def url_parser(self, url):
-        return urlparse.URLParser(url)
+        return URLParser(url)
 
     def url_document(
             self,
