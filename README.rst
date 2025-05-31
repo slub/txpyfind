@@ -29,7 +29,7 @@ Installation
 
 .. code-block:: bash
 
-   pip install git+https://github.com/herreio/txpyfind.git
+   pip install git+https://github.com/slub/txpyfind.git
 
 
 Usage Example
