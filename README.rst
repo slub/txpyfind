@@ -18,14 +18,14 @@ Installation
 ============
 
 ... via PyPI
-~~~~~~~~~~~
+~~~~~~~~~~~~
 
 .. code-block:: bash
 
    pip install txpyfind
 
 ... or from Github source
-~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: bash
 
