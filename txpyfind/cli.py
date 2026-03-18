@@ -16,12 +16,18 @@ logger = logging.getLogger(__name__)
 
 
 def parse_facet(value):
-    """Parse a KEY=VALUE facet argument into a dict."""
+    """Parse a KEY=VALUE facet argument into a (key, value) tuple."""
     if "=" not in value:
         raise argparse.ArgumentTypeError(
             f"facet must be in KEY=VALUE format, got: {value}")
-    key, val = value.split("=", 1)
-    return {key: val}
+    return tuple(value.split("=", 1))
+
+
+def merge_facets(facet_list):
+    """Merge a list of (key, value) tuples into a single dict."""
+    if not facet_list:
+        return None
+    return dict(facet_list)
 
 
 def build_parser():
@@ -69,6 +75,10 @@ def build_parser():
         "--compact",
         action="store_true",
         help="compact JSON output (no indentation)")
+    parser.add_argument(
+        "--show-url",
+        action="store_true",
+        help="print the request URL instead of fetching the response")
     parser.add_argument(
         "-v", "--verbose",
         action="store_true",
@@ -152,10 +162,19 @@ def json_dumps(obj, compact=False):
 
 def cmd_query(find, args):
     """Handle the query subcommand."""
+    if args.show_url:
+        print(find.url_query(
+            args.query,
+            qtype=args.type,
+            facet=merge_facets(args.facet),
+            page=args.page,
+            count=args.count,
+            sort=args.sort))
+        return 0
     result = find.get_query(
         args.query,
         qtype=args.type,
-        facet=args.facet,
+        facet=merge_facets(args.facet),
         page=args.page,
         count=args.count,
         sort=args.sort)
@@ -173,6 +192,13 @@ def cmd_document(find, args):
         print("error: --document-path is required"
               " for the document subcommand", file=sys.stderr)
         return 1
+    if args.show_url:
+        url = find.url_document(args.document_id)
+        if url is None:
+            print("error: could not build document URL", file=sys.stderr)
+            return 1
+        print(url)
+        return 0
     result = find.get_document(args.document_id)
     if result is None:
         print("error: document not found", file=sys.stderr)
@@ -184,11 +210,19 @@ def cmd_document(find, args):
 
 def cmd_scroll(find, args):
     """Handle the scroll subcommand."""
+    if args.show_url:
+        print(find.url_query(
+            args.query,
+            qtype=args.type,
+            facet=merge_facets(args.facet),
+            count=args.batch,
+            sort=args.sort))
+        return 0
     if args.stream:
         for doc in find.stream_get_query(
                 args.query,
                 qtype=args.type,
-                facet=args.facet,
+                facet=merge_facets(args.facet),
                 batch=args.batch,
                 sort=args.sort):
             print(json_dumps(doc, compact=args.compact))
@@ -197,7 +231,7 @@ def cmd_scroll(find, args):
     results = find.scroll_get_query(
         args.query,
         qtype=args.type,
-        facet=args.facet,
+        facet=merge_facets(args.facet),
         batch=args.batch,
         sort=args.sort)
     if results is None:
