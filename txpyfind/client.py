@@ -81,19 +81,16 @@ class Find:  # pylint: disable=R0902
         """
         add facet parameters as subsequent parameters to given URL
         """
-        if facet is not None:
-            for fct in facet:
-                if isinstance(fct, str):
-                    if isinstance(self.facets, list) and fct not in self.facets:
-                        self.logger.warning("Unknown facet type %s!", fct)
-                        continue
-                    url = utils.add_tx_param(url, ["facet", fct, utils.url_encode(facet[fct])], 1)
-                elif isinstance(fct, dict):
-                    for k in fct:
-                        if isinstance(self.facets, list) and k not in self.facets:
-                            self.logger.warning("Unknown facet type %s!", k)
-                            continue
-                        url = utils.add_tx_param(url, ["facet", k, utils.url_encode(fct[k])], 1)
+        if facet is None:
+            return url
+        if isinstance(facet, dict):
+            facet = [facet]
+        for fct in facet:
+            for k, v in fct.items():
+                if isinstance(self.facets, list) and k not in self.facets:
+                    self.logger.warning("Unknown facet type %s!", k)
+                    continue
+                url = utils.add_tx_param(url, ["facet", k, utils.url_encode(v)], 1)
         return url
 
     def url_parser(self, url):

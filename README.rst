@@ -46,11 +46,17 @@ Execute a search query:
 
    txpyfind --url https://katalog.slub-dresden.de query "manfred bonitz"
 
-With facet filters and pagination:
+With a facet filter and pagination:
 
 .. code-block:: bash
 
-   txpyfind --url https://katalog.slub-dresden.de query "python" --facet facet_format=Book --page 1 --count 10
+   txpyfind --url https://katalog.slub-dresden.de query "python" --facet format_de14="Book, E-Book" --page 1 --count 10
+
+Multiple ``--facet`` options can be combined:
+
+.. code-block:: bash
+
+   txpyfind --url https://katalog.slub-dresden.de query "python" --facet format_de14="Book, E-Book" --facet language=German
 
 Document
 ~~~~~~~~
@@ -76,6 +82,18 @@ Stream results as JSONL (one JSON object per line), useful for piping:
 
    txpyfind --url https://katalog.slub-dresden.de scroll "manfred bonitz" --stream | jq .id
 
+Show Request URL
+~~~~~~~~~~~~~~~~
+
+Use ``--show-url`` to print the request URL instead of fetching the response.
+This works with all subcommands:
+
+.. code-block:: bash
+
+   txpyfind --url https://katalog.slub-dresden.de --show-url query "python" --facet format_de14="Book, E-Book"
+   txpyfind --url https://katalog.slub-dresden.de --document-path id --show-url document 0-1132486122
+   txpyfind --url https://katalog.slub-dresden.de --show-url scroll "python" --batch 10
+
 Environment Variable
 ~~~~~~~~~~~~~~~~~~~~
 
@@ -99,7 +117,10 @@ Python Usage Example
    slub_ld_doc = slub_find.get_document("0-1132486122")
    # retrieve JSON-LD data (query view)
    slub_ld_q_default = slub_find.get_query("manfred bonitz")
-   # ...
+   # query with a single facet (dict)
+   slub_find.get_query("python", facet={"format_de14": "Book, E-Book"})
+   # query with multiple facets (list of dicts)
+   slub_find.get_query("python", facet=[{"format_de14": "Book, E-Book"}, {"language": "German"}])
 
 See `slubfind <https://github.com/slub/slubfind>`_ for a full setup example.
 

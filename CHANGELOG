@@ -1,3 +1,8 @@
+1.1.0 [2026-03-18]
+- simplify facet parameter handling in client
+- add --show-url flag to CLI
+- update README with facet and --show-url examples
+
 1.0.0 [2026-03-18]
 - add command-line interface (txpyfind command)
 - promote to production/stable status
