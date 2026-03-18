@@ -8,12 +8,12 @@ from .parser import JSONResponse
 from .urlparse import URLParser
 
 
-class Find:
+class Find:  # pylint: disable=R0902
     """
     ``Find`` class from ``txpyfind.client`` module
     """
 
-    def __init__(
+    def __init__(  # pylint: disable=R0913,R0917
             self,
             base_url,
             document_path=None,
@@ -138,7 +138,7 @@ class Find:
                 return doc
         return None
 
-    def url_query(
+    def url_query(  # pylint: disable=R0913,R0917
             self,
             query,
             qtype="default",
@@ -173,7 +173,7 @@ class Find:
             url = utils.add_tx_param(url, "sort", utils.url_encode(sort))
         return url
 
-    def get_query(
+    def get_query(  # pylint: disable=R0913,R0917
             self,
             query,
             qtype="default",
@@ -228,7 +228,7 @@ class Find:
                 parser_class=parser_class)
         return None
 
-    def scroll_get_query(
+    def scroll_get_query(  # pylint: disable=R0913,R0914,R0917
             self,
             query,
             qtype="default",
@@ -286,7 +286,7 @@ class Find:
             return docs
         return None
 
-    def stream_get_query(
+    def stream_get_query(  # pylint: disable=R0913,R0914,R0917
             self,
             query,
             qtype="default",

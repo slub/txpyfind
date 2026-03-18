@@ -6,7 +6,7 @@ import json
 import logging
 
 
-class JSONResponse:
+class JSONResponse:  # pylint: disable=R0903
     """
     ``JSONResponse`` class from ``txpyfind.parser`` module
     """
