@@ -13,7 +13,7 @@ COUNT = re.compile(r"tx_find_find\[count\]=(\d*)&?")
 SORT = re.compile(r"tx_find_find\[sort\]=([a-zA-Z]*)[+ ]([a-zA-Z]*)&?")
 
 
-class URLParser:
+class URLParser:  # pylint: disable=R0902,R0903
     """
     ``URLParser`` class from ``txpyfind.urlparse`` module
     """

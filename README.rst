@@ -24,7 +24,7 @@ Installation
 
    pip install txpyfind
 
-... or from Github source
+... or from GitHub source
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: bash
@@ -32,8 +32,63 @@ Installation
    pip install git+https://github.com/slub/txpyfind.git
 
 
-Usage Example
-=============
+Command-Line Usage
+==================
+
+After installation, the ``txpyfind`` command is available (also via ``python -m txpyfind``).
+
+Query
+~~~~~
+
+Execute a search query:
+
+.. code-block:: bash
+
+   txpyfind --url https://katalog.slub-dresden.de query "manfred bonitz"
+
+With facet filters and pagination:
+
+.. code-block:: bash
+
+   txpyfind --url https://katalog.slub-dresden.de query "python" --facet facet_format=Book --page 1 --count 10
+
+Document
+~~~~~~~~
+
+Fetch a single document by ID:
+
+.. code-block:: bash
+
+   txpyfind --url https://katalog.slub-dresden.de --document-path id document 0-1132486122
+
+Scroll
+~~~~~~
+
+Fetch all results for a query:
+
+.. code-block:: bash
+
+   txpyfind --url https://katalog.slub-dresden.de scroll "manfred bonitz" --batch 10
+
+Stream results as JSONL (one JSON object per line), useful for piping:
+
+.. code-block:: bash
+
+   txpyfind --url https://katalog.slub-dresden.de scroll "manfred bonitz" --stream | jq .id
+
+Environment Variable
+~~~~~~~~~~~~~~~~~~~~
+
+Set ``TXPYFIND_URL`` to avoid repeating the ``--url`` option:
+
+.. code-block:: bash
+
+   export TXPYFIND_URL=https://katalog.slub-dresden.de
+   txpyfind query "manfred bonitz"
+   txpyfind --document-path id document 0-1132486122
+
+Python Usage Example
+====================
 
 .. code-block:: python
 
@@ -47,3 +102,9 @@ Usage Example
    # ...
 
 See `slubfind <https://github.com/slub/slubfind>`_ for a full setup example.
+
+License
+=======
+
+This project is licensed under the GNU General Public License v3 (GPLv3).
+See the `LICENSE <LICENSE>`_ file for the full license text.

@@ -1,3 +1,10 @@
+1.0.0 [2026-03-18]
+- add command-line interface (txpyfind command)
+- promote to production/stable status
+- require Python >= 3.8
+- populate LICENSE with GPLv3 text
+- update CI action versions
+
 0.1.1 [2025-05-31]
 - fix git path in long_description
 

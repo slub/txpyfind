@@ -6,7 +6,7 @@ import json
 import logging
 
 
-class JSONResponse:
+class JSONResponse:  # pylint: disable=R0903
     """
     ``JSONResponse`` class from ``txpyfind.parser`` module
     """
@@ -17,7 +17,7 @@ class JSONResponse:
         try:
             self.raw = json.loads(plain)
         except json.decoder.JSONDecodeError as err:
-            self.logger.error(err)
+            self.logger.error("Failed to parse JSON response: %s", err)
             self.raw = None
         self.fields = self._names(raw=self.raw)
 

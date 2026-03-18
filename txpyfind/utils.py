@@ -3,6 +3,7 @@ utils module of ``txpyfind`` package
 """
 import json
 import logging
+from urllib.error import URLError
 from urllib.parse import quote_plus
 from urllib.request import Request, urlopen
 
@@ -23,8 +24,8 @@ def get_request(url):
             if response.code == 200:
                 return response.read()
             logger.error("HTTP %d GET %s", response.code, url)
-    except Exception as exc:
-        logger.error(exc)
+    except URLError as exc:
+        logger.error("Failed to fetch %s: %s", url, exc)
     return None
 
 
@@ -36,8 +37,8 @@ def plain_request(url):
     if isinstance(payload, bytes):
         try:
             return payload.decode()
-        except Exception as exc:
-            logger.error(exc)
+        except UnicodeDecodeError as exc:
+            logger.error("Failed to decode response from %s: %s", url, exc)
     return None
 
 
