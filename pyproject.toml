@@ -15,22 +15,26 @@ authors = [
         {email = "donatus.herre@slub-dresden.de"}
 ]
 license = {text = "GPLv3"}
-keywords = []
+keywords = ["typo3", "typo3-find", "solr"]
 classifiers = [
             "Programming Language :: Python :: 3",
             "Operating System :: OS Independent",
             "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
-            "Development Status :: 3 - Alpha",
+            "Development Status :: 5 - Production/Stable",
+            "Environment :: Console",
             "Intended Audience :: Developers",
             "Intended Audience :: Education",
             "Intended Audience :: Science/Research",
             "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dynamic = ["version", "dependencies"]
-requires-python = ">=3.7"
+requires-python = ">=3.8"
 
 [project.urls]
 homepage = "https://github.com/slub/txpyfind"
+repository = "https://github.com/slub/txpyfind"
+issues = "https://github.com/slub/txpyfind/issues"
+changelog = "https://github.com/slub/txpyfind/blob/main/CHANGELOG"
 
 [project.scripts]
 txpyfind = "txpyfind.cli:main"

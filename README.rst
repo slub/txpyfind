@@ -102,3 +102,9 @@ Python Usage Example
    # ...
 
 See `slubfind <https://github.com/slub/slubfind>`_ for a full setup example.
+
+License
+=======
+
+This project is licensed under the GNU General Public License v3 (GPLv3).
+See the `LICENSE <LICENSE>`_ file for the full license text.
