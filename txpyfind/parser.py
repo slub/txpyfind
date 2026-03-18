@@ -17,7 +17,7 @@ class JSONResponse:
         try:
             self.raw = json.loads(plain)
         except json.decoder.JSONDecodeError as err:
-            self.logger.error(err)
+            self.logger.error("Failed to parse JSON response: %s", err)
             self.raw = None
         self.fields = self._names(raw=self.raw)
 

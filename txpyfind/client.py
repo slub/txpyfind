@@ -152,7 +152,8 @@ class Find:
         get the URL for the query view
         """
         if qtype not in self.query_types:
-            self.logger.warning("Unknown query type!")
+            self.logger.warning(
+                "Unknown query type '%s', falling back to 'default'.", qtype)
             qtype = "default"
         url = utils.set_tx_param(self.base_url, ["q", qtype], utils.url_encode(query))
         url = self.add_data_params(url, data_format=data_format, type_num=type_num)
