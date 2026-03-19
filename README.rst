@@ -14,6 +14,9 @@ to create the three formats.
 You can use the client class available in this Python package to query these exports. A simple parser
 for the returned JSON objects is also available.
 
+See `slubfind <https://github.com/slub/slubfind>`_ for a real-world implementation example,
+including custom query types and instance-specific response parsing.
+
 Installation
 ============
 
@@ -145,8 +148,6 @@ Python Usage Example
    slub_find.get_query("python", facet={"format_de14": "Book, E-Book"})
    # query with multiple facets (list of dicts)
    slub_find.get_query("python", facet=[{"format_de14": "Book, E-Book"}, {"language": "German"}])
-
-See `slubfind <https://github.com/slub/slubfind>`_ for a full setup example.
 
 License
 =======
