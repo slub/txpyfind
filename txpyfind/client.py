@@ -238,8 +238,9 @@ class Find:  # pylint: disable=R0902
         """
         get all pages of a query view
         """
-        if data_format is None:
-            data_format = self.export_format
+        if batch <= 0:
+            self.logger.warning("batch must be > 0; defaulting to 20")
+            batch = 20
         if data_format != "raw-solr-response":
             self.logger.warning(
                 "Scrolling only supports data format of type 'raw-solr-response'!")
@@ -296,8 +297,9 @@ class Find:  # pylint: disable=R0902
         """
         iterate all pages of a query view
         """
-        if data_format is None:
-            data_format = self.export_format
+        if batch <= 0:
+            self.logger.warning("batch must be > 0; defaulting to 20")
+            batch = 20
         if data_format != "raw-solr-response":
             self.logger.warning(
                 "Streaming only supports data format of type 'raw-solr-response'!")

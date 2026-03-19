@@ -108,7 +108,7 @@ def get_facets(url):
         for facet in facets:
             fct.append({facet[0]: facet[1]})
         return fct
-    return {}
+    return []
 
 
 def get_page(url):
