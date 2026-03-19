@@ -1,3 +1,6 @@
+1.2.4 [2026-03-19]
+- fix stream_get_query dropping type_num and parser_class in paginated calls
+
 1.2.3 [2026-03-19]
 - improve slubfind reference in README: reword and move to end of CLI section
 
