@@ -56,7 +56,6 @@ def build_parser():
     parser.add_argument(
         "--export-format",
         default="raw-solr-response",
-        choices=["raw-solr-response", "json-all", "json-solr-results", "json-ld"],
         help="export format (default: raw-solr-response)")
     parser.add_argument(
         "--export-page",
