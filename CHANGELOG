@@ -1,3 +1,6 @@
+1.2.8 [2026-03-19]
+- fix document examples in README to use json-ld export format
+
 1.2.7 [2026-03-19]
 - add 30-second timeout to urlopen to prevent indefinite blocking
 - initialise URLParser.query and URLParser.qtype to "" unconditionally
