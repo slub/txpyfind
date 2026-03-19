@@ -109,14 +109,14 @@ This works with all subcommands:
 Export Format
 ~~~~~~~~~~~~~
 
-Use ``--export-format`` to select the response format. Valid values are
-``raw-solr-response`` (default), ``json-all``, ``json-solr-results``, and
-``json-ld``:
+Use ``--export-format`` to select the response format. The three formats
+built into TYPO3-find are ``raw-solr-response`` (default), ``json-all``, and
+``json-solr-results``. Individual instances may provide additional formats:
 
 .. code-block:: bash
 
-   txpyfind --url https://katalog.slub-dresden.de --export-format json-ld query "manfred bonitz"
-   txpyfind --url https://katalog.slub-dresden.de --document-path id --export-format json-ld document 0-1132486122
+   txpyfind --url https://katalog.slub-dresden.de --export-format json-solr-results query "manfred bonitz"
+   txpyfind --url https://katalog.slub-dresden.de --document-path id --export-format json-solr-results document 0-1132486122
 
 Environment Variable
 ~~~~~~~~~~~~~~~~~~~~
