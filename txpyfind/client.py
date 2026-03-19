@@ -323,7 +323,9 @@ class Find:  # pylint: disable=R0902
                     page=i,
                     count=batch,
                     sort=sort,
-                    data_format=data_format)
+                    data_format=data_format,
+                    type_num=type_num,
+                    parser_class=parser_class)
                 if hasattr(response_i, "raw") and isinstance(
                         response_i.raw, dict) and "response" in response_i.raw:
                     data_i = response_i.raw["response"]
