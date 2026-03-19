@@ -21,9 +21,9 @@ def get_request(url):
     req.add_header("User-Agent", f"txpyfind {__version__}")
     try:
         with urlopen(req) as response:
-            if response.code == 200:
+            if response.status == 200:
                 return response.read()
-            logger.error("HTTP %d GET %s", response.code, url)
+            logger.error("HTTP %d GET %s", response.status, url)
     except URLError as exc:
         logger.error("Failed to fetch %s: %s", url, exc)
     return None

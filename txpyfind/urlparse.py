@@ -10,7 +10,7 @@ SUBSTITUTE = "%#"
 FACET = re.compile(r"tx_find_find\[facet\]\[([^]]*)\]\[([^]]*)\]=1&?")
 PAGE = re.compile(r"tx_find_find\[page\]=(\d*)&?")
 COUNT = re.compile(r"tx_find_find\[count\]=(\d*)&?")
-SORT = re.compile(r"tx_find_find\[sort\]=([a-zA-Z]*)[+ ]([a-zA-Z]*)&?")
+SORT = re.compile(r"tx_find_find\[sort\]=([a-zA-Z0-9_]*)[+ ]([a-zA-Z0-9_]*)&?")
 
 
 class URLParser:  # pylint: disable=R0902,R0903

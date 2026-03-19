@@ -39,6 +39,6 @@ class JSONResponse:  # pylint: disable=R0903
         if isinstance(value, str):
             return html.unescape(value.strip())
         if isinstance(value, list) and len(value) > 0 and \
-                all(isinstance(v, str) and len(v.strip()) > 0 for v in value):
+                all(isinstance(v, str) for v in value):
             return [html.unescape(v.strip()) for v in value]
         return value

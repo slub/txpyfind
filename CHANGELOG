@@ -1,3 +1,9 @@
+1.2.6 [2026-03-19]
+- fix _unescape skipping entire list when any element is blank
+- fix merge_facets dropping duplicate-key facets via dict() overwrite
+- fix SORT regex to match underscore/digit field names
+- replace deprecated response.code with response.status
+
 1.2.5 [2026-03-19]
 - fix get_facets() returning {} instead of [] on no-facet path
 - remove dead data_format=None guard in scroll_get_query and stream_get_query
