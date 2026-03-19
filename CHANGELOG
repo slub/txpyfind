@@ -1,3 +1,6 @@
+1.2.1 [2026-03-19]
+- update README with query type and export format examples
+
 1.2.0 [2026-03-19]
 - replace --compact with --pretty flag (compact JSON is now the default)
 - add choices validation for --export-format CLI argument
