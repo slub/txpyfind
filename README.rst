@@ -58,6 +58,18 @@ Multiple ``--facet`` options can be combined:
 
    txpyfind --url https://katalog.slub-dresden.de query "python" --facet format_de14="Book, E-Book" --facet language=German
 
+Query Type
+~~~~~~~~~~
+
+Use ``--type`` to select a query type (e.g. ``author``, ``title``). Valid
+values depend on the TYPO3-find instance. Use ``--query-type`` (repeatable)
+to whitelist the types accepted by ``--type``; if omitted, only ``default``
+is allowed:
+
+.. code-block:: bash
+
+   txpyfind --url https://katalog.slub-dresden.de --query-type default --query-type author --query-type title query "bonitz" --type author
+
 Document
 ~~~~~~~~
 
@@ -93,6 +105,18 @@ This works with all subcommands:
    txpyfind --url https://katalog.slub-dresden.de --show-url query "python" --facet format_de14="Book, E-Book"
    txpyfind --url https://katalog.slub-dresden.de --document-path id --show-url document 0-1132486122
    txpyfind --url https://katalog.slub-dresden.de --show-url scroll "python" --batch 10
+
+Export Format
+~~~~~~~~~~~~~
+
+Use ``--export-format`` to select the response format. Valid values are
+``raw-solr-response`` (default), ``json-all``, ``json-solr-results``, and
+``json-ld``:
+
+.. code-block:: bash
+
+   txpyfind --url https://katalog.slub-dresden.de --export-format json-ld query "manfred bonitz"
+   txpyfind --url https://katalog.slub-dresden.de --document-path id --export-format json-ld document 0-1132486122
 
 Environment Variable
 ~~~~~~~~~~~~~~~~~~~~
