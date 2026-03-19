@@ -56,6 +56,7 @@ def build_parser():
     parser.add_argument(
         "--export-format",
         default="raw-solr-response",
+        choices=["raw-solr-response", "json-all", "json-solr-results", "json-ld"],
         help="export format (default: raw-solr-response)")
     parser.add_argument(
         "--export-page",
@@ -72,9 +73,9 @@ def build_parser():
         default=None,
         help="regex pattern for allowed sort instructions")
     parser.add_argument(
-        "--compact",
+        "--pretty",
         action="store_true",
-        help="compact JSON output (no indentation)")
+        help="pretty-print JSON output (default: compact)")
     parser.add_argument(
         "--show-url",
         action="store_true",
@@ -91,7 +92,8 @@ def build_parser():
         "query", help="execute a search query")
     query_parser.add_argument("query", help="search query string")
     query_parser.add_argument(
-        "--type", default="default", help="query type (default: default)")
+        "--type", default="default",
+        help="query type; must be one of the --query-type values (default: default)")
     query_parser.add_argument(
         "--facet", action="append", type=parse_facet,
         help="facet filter as KEY=VALUE (repeatable)")
@@ -112,7 +114,8 @@ def build_parser():
         "scroll", help="fetch all paginated results")
     scroll_parser.add_argument("query", help="search query string")
     scroll_parser.add_argument(
-        "--type", default="default", help="query type (default: default)")
+        "--type", default="default",
+        help="query type; must be one of the --query-type values (default: default)")
     scroll_parser.add_argument(
         "--facet", action="append", type=parse_facet,
         help="facet filter as KEY=VALUE (repeatable)")
@@ -153,11 +156,11 @@ def make_find(args):
         export_page=args.export_page)
 
 
-def json_dumps(obj, compact=False):
+def json_dumps(obj, pretty=False):
     """Serialize object to JSON string."""
-    if compact:
-        return json.dumps(obj, ensure_ascii=False, separators=(",", ":"))
-    return json.dumps(obj, ensure_ascii=False, indent=2)
+    if pretty:
+        return json.dumps(obj, ensure_ascii=False, indent=2)
+    return json.dumps(obj, ensure_ascii=False, separators=(",", ":"))
 
 
 def cmd_query(find, args):
@@ -182,7 +185,7 @@ def cmd_query(find, args):
         print("error: no results", file=sys.stderr)
         return 1
     data = result.raw if hasattr(result, "raw") else result
-    print(json_dumps(data, compact=args.compact))
+    print(json_dumps(data, pretty=args.pretty))
     return 0
 
 
@@ -204,7 +207,7 @@ def cmd_document(find, args):
         print("error: document not found", file=sys.stderr)
         return 1
     data = result.raw if hasattr(result, "raw") else result
-    print(json_dumps(data, compact=args.compact))
+    print(json_dumps(data, pretty=args.pretty))
     return 0
 
 
@@ -225,7 +228,7 @@ def cmd_scroll(find, args):
                 facet=merge_facets(args.facet),
                 batch=args.batch,
                 sort=args.sort):
-            print(json_dumps(doc, compact=args.compact))
+            print(json_dumps(doc, pretty=args.pretty))
         return 0
 
     results = find.scroll_get_query(
@@ -237,7 +240,7 @@ def cmd_scroll(find, args):
     if results is None:
         print("error: no results", file=sys.stderr)
         return 1
-    print(json_dumps(results, compact=args.compact))
+    print(json_dumps(results, pretty=args.pretty))
     return 0
 
 
