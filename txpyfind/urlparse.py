@@ -20,6 +20,8 @@ class URLParser:  # pylint: disable=R0902,R0903
 
     def __init__(self, url):
         self.url = url
+        self.query = ""
+        self.qtype = ""
         query_details = get_query(url)
         self.is_ok = False
         if len(query_details) > 1:

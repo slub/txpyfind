@@ -20,7 +20,7 @@ def get_request(url):
     req = Request(url)
     req.add_header("User-Agent", f"txpyfind {__version__}")
     try:
-        with urlopen(req) as response:
+        with urlopen(req, timeout=30) as response:
             if response.status == 200:
                 return response.read()
             logger.error("HTTP %d GET %s", response.status, url)
