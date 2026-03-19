@@ -1,3 +1,8 @@
+1.2.5 [2026-03-19]
+- fix get_facets() returning {} instead of [] on no-facet path
+- remove dead data_format=None guard in scroll_get_query and stream_get_query
+- add batch <= 0 guard in scroll_get_query and stream_get_query
+
 1.2.4 [2026-03-19]
 - fix stream_get_query dropping type_num and parser_class in paginated calls
 
