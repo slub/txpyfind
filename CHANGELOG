@@ -1,3 +1,12 @@
+1.5.0 [2026-03-21]
+- add --plain flag to print raw response text
+- add --parser flag to load custom parser classes from the CLI
+- add --parser none to disable parsing and print raw response
+- remove --export-format choices restriction on query subcommand
+- rewrite README intro, add plain output and custom parser sections
+- normalize docstrings across all modules
+- update package description in pyproject.toml
+
 1.4.0 [2026-03-21]
 - move --export-format to query (with choices) and document (required) subcommands
 - move --pretty to query and document subcommands
