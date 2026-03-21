@@ -4,7 +4,7 @@ client module of ``txpyfind`` package
 import re
 import logging
 from . import utils
-from .parser import JSONResponse
+from .parser import JSONResponse, RawSolrResponse
 from .urlparse import URLParser
 
 
@@ -245,6 +245,8 @@ class Find:  # pylint: disable=R0902
             self.logger.warning(
                 "Scrolling only supports data format of type 'raw-solr-response'!")
             data_format = "raw-solr-response"
+        if parser_class is None:
+            parser_class = RawSolrResponse
         response = self.get_query(
             query,
             qtype=qtype,
@@ -253,10 +255,8 @@ class Find:  # pylint: disable=R0902
             data_format=data_format,
             type_num=type_num,
             parser_class=parser_class)
-        if hasattr(response, "raw") and isinstance(
-                response.raw, dict) and "response" in response.raw:
-            data = response.raw["response"]
-            total = data["numFound"]
+        if isinstance(response, RawSolrResponse) and response.ok:
+            total = response.num_found
             docs = []
             pages = int(total / batch) + (total % batch > 0)
             for i in range(1, pages+1):
@@ -270,12 +270,8 @@ class Find:  # pylint: disable=R0902
                     data_format=data_format,
                     type_num=type_num,
                     parser_class=parser_class)
-                if hasattr(response_i, "raw") and isinstance(
-                        response_i.raw, dict) and "response" in response_i.raw:
-                    data_i = response_i.raw["response"]
-                    if "docs" in data_i:
-                        for doc in data_i["docs"]:
-                            docs.append(doc)
+                if isinstance(response_i, RawSolrResponse) and response_i.ok:
+                    docs.extend(response_i.docs)
             found = len(docs)
             if total != found:
                 self.logger.warning(
@@ -304,6 +300,8 @@ class Find:  # pylint: disable=R0902
             self.logger.warning(
                 "Streaming only supports data format of type 'raw-solr-response'!")
             data_format = "raw-solr-response"
+        if parser_class is None:
+            parser_class = RawSolrResponse
         response = self.get_query(
             query,
             qtype=qtype,
@@ -312,10 +310,8 @@ class Find:  # pylint: disable=R0902
             data_format=data_format,
             type_num=type_num,
             parser_class=parser_class)
-        if hasattr(response, "raw") and isinstance(
-                response.raw, dict) and "response" in response.raw:
-            data = response.raw["response"]
-            total = data["numFound"]
+        if isinstance(response, RawSolrResponse) and response.ok:
+            total = response.num_found
             pages = int(total / batch) + (total % batch > 0)
             for i in range(1, pages+1):
                 response_i = self.get_query(
@@ -328,8 +324,5 @@ class Find:  # pylint: disable=R0902
                     data_format=data_format,
                     type_num=type_num,
                     parser_class=parser_class)
-                if hasattr(response_i, "raw") and isinstance(
-                        response_i.raw, dict) and "response" in response_i.raw:
-                    data_i = response_i.raw["response"]
-                    if "docs" in data_i:
-                        yield from data_i["docs"]
+                if isinstance(response_i, RawSolrResponse) and response_i.ok:
+                    yield from response_i.docs
