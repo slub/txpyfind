@@ -42,3 +42,74 @@ class JSONResponse:  # pylint: disable=R0903
                 all(isinstance(v, str) for v in value):
             return [html.unescape(v.strip()) for v in value]
         return value
+
+
+class RawSolrResponse(JSONResponse):
+    """
+    Parser for ``raw-solr-response`` export format.
+
+    Expected structure::
+
+        {"response": {"numFound": N, "start": S, "docs": [...]},
+         "facet_counts": {...}, "highlighting": {...}}
+    """
+
+    def __init__(self, plain):
+        super().__init__(plain)
+        response = self._field("response")
+        if isinstance(response, dict):
+            self.ok = True
+            self.num_found = response.get("numFound", 0)
+            self.start = response.get("start", 0)
+            self.docs = response.get("docs", [])
+        else:
+            self.ok = False
+            self.num_found = 0
+            self.start = 0
+            self.docs = []
+
+    @property
+    def facet_counts(self):
+        return self._field("facet_counts")
+
+    @property
+    def highlighting(self):
+        return self._field("highlighting")
+
+
+class SolrResultsResponse(JSONResponse):
+    """
+    Parser for ``json-solr-results`` export format.
+
+    Expected structure::
+
+        [{field1: ..., field2: ...}, ...]
+    """
+
+    def __init__(self, plain):
+        super().__init__(plain)
+        self.ok = isinstance(self.raw, list)
+
+    @property
+    def docs(self):
+        if self.ok:
+            return self.raw
+        return []
+
+
+class AllResponse(JSONResponse):
+    """
+    Parser for ``json-all`` export format.
+
+    Expected structure::
+
+        {"settings": {...}, ...}
+    """
+
+    def __init__(self, plain):
+        super().__init__(plain)
+        self.ok = isinstance(self.raw, dict)
+
+    @property
+    def settings(self):
+        return self._field("settings")
