@@ -1,3 +1,11 @@
+1.4.0 [2026-03-21]
+- move --export-format to query (with choices) and document (required) subcommands
+- move --pretty to query and document subcommands
+- move --document-path to document subcommand
+- consolidate --type, --facet, --sort into shared query/scroll parent parser
+- move --query-type, --count-limit, --sort-pattern to query and scroll subcommands
+- scroll output is always compact JSON
+
 1.3.0 [2026-03-21]
 - add RawSolrResponse, SolrResultsResponse, AllResponse parser classes
 - refactor scroll_get_query and stream_get_query to use RawSolrResponse
