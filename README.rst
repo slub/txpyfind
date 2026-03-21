@@ -71,7 +71,7 @@ is allowed:
 
 .. code-block:: bash
 
-   txpyfind --url https://katalog.slub-dresden.de --query-type default --query-type author --query-type title query "bonitz" --type author
+   txpyfind --url https://katalog.slub-dresden.de query --query-type default --query-type author --query-type title --type author "bonitz"
 
 Document
 ~~~~~~~~
@@ -80,7 +80,7 @@ Fetch a single document by ID:
 
 .. code-block:: bash
 
-   txpyfind --url https://katalog.slub-dresden.de --document-path id --export-format json-ld document 0-1132486122
+   txpyfind --url https://katalog.slub-dresden.de document --document-path id --export-format json-ld 0-1132486122
 
 Scroll
 ~~~~~~
@@ -106,20 +106,21 @@ This works with all subcommands:
 .. code-block:: bash
 
    txpyfind --url https://katalog.slub-dresden.de --show-url query "python" --facet format_de14="Book, E-Book"
-   txpyfind --url https://katalog.slub-dresden.de --document-path id --export-format json-ld --show-url document 0-1132486122
+   txpyfind --url https://katalog.slub-dresden.de --show-url document --document-path id --export-format json-ld 0-1132486122
    txpyfind --url https://katalog.slub-dresden.de --show-url scroll "python" --batch 10
 
 Export Format
 ~~~~~~~~~~~~~
 
-Use ``--export-format`` to select the response format. The three formats
-built into TYPO3-find are ``raw-solr-response`` (default), ``json-all``, and
-``json-solr-results``. Individual instances may provide additional formats:
+Use ``--export-format`` on the ``query`` subcommand to select the response
+format (default: ``raw-solr-response``). On the ``document`` subcommand,
+``--export-format`` is required and has no default. The three formats built
+into TYPO3-find are ``raw-solr-response``, ``json-all``, and
+``json-solr-results``:
 
 .. code-block:: bash
 
-   txpyfind --url https://katalog.slub-dresden.de --export-format json-solr-results query "manfred bonitz"
-   txpyfind --url https://katalog.slub-dresden.de --document-path id --export-format json-ld document 0-1132486122
+   txpyfind --url https://katalog.slub-dresden.de query --export-format json-solr-results "manfred bonitz"
 
 Environment Variable
 ~~~~~~~~~~~~~~~~~~~~
@@ -130,7 +131,7 @@ Set ``TXPYFIND_URL`` to avoid repeating the ``--url`` option:
 
    export TXPYFIND_URL=https://katalog.slub-dresden.de
    txpyfind query "manfred bonitz"
-   txpyfind --document-path id --export-format json-ld document 0-1132486122
+   txpyfind document --document-path id --export-format json-ld 0-1132486122
 
 Python Usage Example
 ====================

@@ -45,36 +45,10 @@ def build_parser():
         help="base URL of the TYPO3-find instance"
              " (or set TXPYFIND_URL env var)")
     parser.add_argument(
-        "--document-path",
-        default=None,
-        help="document path for detail views")
-    parser.add_argument(
-        "--query-type",
-        action="append",
-        dest="query_types",
-        help="allowed query type (repeatable, default: 'default')")
-    parser.add_argument(
-        "--export-format",
-        default="raw-solr-response",
-        help="export format (default: raw-solr-response)")
-    parser.add_argument(
         "--export-page",
         type=int,
         default=1369315139,
         help="export page type number (default: 1369315139)")
-    parser.add_argument(
-        "--count-limit",
-        type=int,
-        default=100,
-        help="maximum count per request (default: 100)")
-    parser.add_argument(
-        "--sort-pattern",
-        default=None,
-        help="regex pattern for allowed sort instructions")
-    parser.add_argument(
-        "--pretty",
-        action="store_true",
-        help="pretty-print JSON output (default: compact)")
     parser.add_argument(
         "--show-url",
         action="store_true",
@@ -84,48 +58,80 @@ def build_parser():
         action="store_true",
         help="enable debug logging to stderr")
 
+    # shared options for query-based subcommands
+    query_common = argparse.ArgumentParser(add_help=False)
+    query_common.add_argument(
+        "--query-type",
+        action="append",
+        dest="query_types",
+        help="allowed query type (repeatable, default: 'default')")
+    query_common.add_argument(
+        "--count-limit",
+        type=int,
+        default=100,
+        help="maximum count per request (default: 100)")
+    query_common.add_argument(
+        "--sort-pattern",
+        default=None,
+        help="regex pattern for allowed sort instructions")
+    query_common.add_argument(
+        "--type", default="default",
+        help="query type; must be one of the --query-type values (default: default)")
+    query_common.add_argument(
+        "--facet", action="append", type=parse_facet,
+        help="facet filter as KEY=VALUE (repeatable)")
+    query_common.add_argument(
+        "--sort", default="", help="sort instruction")
+
     subparsers = parser.add_subparsers(dest="command")
 
     # query subcommand
     query_parser = subparsers.add_parser(
-        "query", help="execute a search query")
+        "query", help="execute a search query",
+        parents=[query_common])
     query_parser.add_argument("query", help="search query string")
     query_parser.add_argument(
-        "--type", default="default",
-        help="query type; must be one of the --query-type values (default: default)")
+        "--export-format",
+        choices=["raw-solr-response", "json-solr-results", "json-all"],
+        default="raw-solr-response",
+        help="export format (default: raw-solr-response)")
     query_parser.add_argument(
-        "--facet", action="append", type=parse_facet,
-        help="facet filter as KEY=VALUE (repeatable)")
+        "--pretty",
+        action="store_true",
+        help="pretty-print JSON output")
     query_parser.add_argument(
         "--page", type=int, default=0, help="page number")
     query_parser.add_argument(
         "--count", type=int, default=0, help="results per page")
-    query_parser.add_argument(
-        "--sort", default="", help="sort instruction")
+
+    # scroll subcommand
+    scroll_parser = subparsers.add_parser(
+        "scroll", help="fetch all paginated results",
+        parents=[query_common])
+    scroll_parser.add_argument("query", help="search query string")
+    scroll_parser.add_argument(
+        "--batch", type=int, default=20,
+        help="results per batch (default: 20)")
+    scroll_parser.add_argument(
+        "--stream", action="store_true",
+        help="output one JSON object per line (JSONL)")
 
     # document subcommand
     doc_parser = subparsers.add_parser(
         "document", help="fetch a document by ID")
     doc_parser.add_argument("document_id", help="document identifier")
-
-    # scroll subcommand
-    scroll_parser = subparsers.add_parser(
-        "scroll", help="fetch all paginated results")
-    scroll_parser.add_argument("query", help="search query string")
-    scroll_parser.add_argument(
-        "--type", default="default",
-        help="query type; must be one of the --query-type values (default: default)")
-    scroll_parser.add_argument(
-        "--facet", action="append", type=parse_facet,
-        help="facet filter as KEY=VALUE (repeatable)")
-    scroll_parser.add_argument(
-        "--batch", type=int, default=20,
-        help="results per batch (default: 20)")
-    scroll_parser.add_argument(
-        "--sort", default="", help="sort instruction")
-    scroll_parser.add_argument(
-        "--stream", action="store_true",
-        help="output one JSON object per line (JSONL)")
+    doc_parser.add_argument(
+        "--document-path",
+        default=None,
+        help="document path for detail views")
+    doc_parser.add_argument(
+        "--export-format",
+        required=True,
+        help="export format (required for document subcommand)")
+    doc_parser.add_argument(
+        "--pretty",
+        action="store_true",
+        help="pretty-print JSON output")
 
     return parser
 
@@ -138,20 +144,21 @@ def make_find(args):
         sys.exit(1)
 
     sort_pattern = None
-    if args.sort_pattern is not None:
-        sort_pattern = re.compile(args.sort_pattern)
+    raw_sort_pattern = getattr(args, 'sort_pattern', None)
+    if raw_sort_pattern is not None:
+        sort_pattern = re.compile(raw_sort_pattern)
 
-    query_types = args.query_types
+    query_types = getattr(args, 'query_types', None)
     if query_types is None:
         query_types = ["default"]
 
     return Find(
         args.url,
-        document_path=args.document_path,
+        document_path=getattr(args, 'document_path', None),
         query_types=query_types,
-        count_limit=args.count_limit,
+        count_limit=getattr(args, 'count_limit', 100),
         sort_pattern=sort_pattern,
-        export_format=args.export_format,
+        export_format=getattr(args, 'export_format', 'raw-solr-response'),
         export_page=args.export_page)
 
 
@@ -227,7 +234,7 @@ def cmd_scroll(find, args):
                 facet=merge_facets(args.facet),
                 batch=args.batch,
                 sort=args.sort):
-            print(json_dumps(doc, pretty=args.pretty))
+            print(json_dumps(doc))
         return 0
 
     results = find.scroll_get_query(
@@ -239,7 +246,7 @@ def cmd_scroll(find, args):
     if results is None:
         print("error: no results", file=sys.stderr)
         return 1
-    print(json_dumps(results, pretty=args.pretty))
+    print(json_dumps(results))
     return 0
 
 
