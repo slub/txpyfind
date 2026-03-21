@@ -1,6 +1,4 @@
-"""
-client module of ``txpyfind`` package
-"""
+"""TYPO3-find client for building queries and fetching responses."""
 import re
 import logging
 from . import utils
@@ -9,9 +7,7 @@ from .urlparse import URLParser
 
 
 class Find:  # pylint: disable=R0902
-    """
-    ``Find`` class from ``txpyfind.client`` module
-    """
+    """Client for querying TYPO3-find instances."""
 
     def __init__(  # pylint: disable=R0913,R0917
             self,
@@ -24,6 +20,7 @@ class Find:  # pylint: disable=R0902
             export_format="raw-solr-response",
             export_page=1369315139,
             parser_class=JSONResponse):
+        """Initialize client with base URL and optional query/export settings."""
         self.base_url = base_url
         self.document_path = document_path
         if query_types is None:
@@ -45,9 +42,7 @@ class Find:  # pylint: disable=R0902
             url,
             data_format=None,
             type_num=None):
-        """
-        add data exports parameters as initial parameters to given URL
-        """
+        """Add data export parameters as initial parameters to the given URL."""
         if data_format is None:
             data_format = self.export_format
         if type_num is None:
@@ -62,9 +57,7 @@ class Find:  # pylint: disable=R0902
             url,
             data_format=None,
             type_num=None):
-        """
-        add data exports parameters as subsequent parameters to given URL
-        """
+        """Add data export parameters as subsequent parameters to the given URL."""
         if data_format is None:
             data_format = self.export_format
         if type_num is None:
@@ -78,9 +71,7 @@ class Find:  # pylint: disable=R0902
             self,
             url,
             facet=None):
-        """
-        add facet parameters as subsequent parameters to given URL
-        """
+        """Add facet parameters as subsequent parameters to the given URL."""
         if facet is None:
             return url
         if isinstance(facet, dict):
@@ -94,6 +85,7 @@ class Find:  # pylint: disable=R0902
         return url
 
     def url_parser(self, url):
+        """Return a URLParser for the given URL."""
         return URLParser(url)
 
     def url_document(
@@ -101,9 +93,7 @@ class Find:  # pylint: disable=R0902
             doc_id,
             data_format=None,
             type_num=None):
-        """
-        get the URL for the detail view of the document given by id
-        """
+        """Build the URL for the detail view of the given document."""
         if self.document_url is not None:
             doc_url = f"{self.document_url}/{doc_id}"
             return self.set_data_params(
@@ -118,9 +108,7 @@ class Find:  # pylint: disable=R0902
             data_format=None,
             type_num=None,
             parser_class=None):
-        """
-        get the detail view of the document given by id
-        """
+        """Fetch and parse the detail view of the given document."""
         url = self.url_document(
             document_id,
             data_format=data_format,
@@ -145,9 +133,7 @@ class Find:  # pylint: disable=R0902
             sort="",
             data_format=None,
             type_num=None):
-        """
-        get the URL for the query view
-        """
+        """Build the URL for a query view."""
         if qtype not in self.query_types:
             self.logger.warning(
                 "Unknown query type '%s', falling back to 'default'.", qtype)
@@ -181,9 +167,7 @@ class Find:  # pylint: disable=R0902
             data_format=None,
             type_num=None,
             parser_class=None):
-        """
-        get query view
-        """
+        """Fetch and parse a query view."""
         url = self.url_query(
             query,
             qtype=qtype,
@@ -208,9 +192,7 @@ class Find:  # pylint: disable=R0902
             data_format=None,
             type_num=None,
             parser_class=None):
-        """
-        get query view via url
-        """
+        """Fetch and parse a query view from a full TYPO3-find URL."""
         url = self.url_parser(url)
         if url.is_ok:
             return self.get_query(
@@ -235,9 +217,7 @@ class Find:  # pylint: disable=R0902
             data_format="raw-solr-response",
             type_num=None,
             parser_class=None):
-        """
-        get all pages of a query view
-        """
+        """Fetch all pages of a query and return collected documents."""
         if batch <= 0:
             self.logger.warning("batch must be > 0; defaulting to 20")
             batch = 20
@@ -290,9 +270,7 @@ class Find:  # pylint: disable=R0902
             data_format="raw-solr-response",
             type_num=None,
             parser_class=None):
-        """
-        iterate all pages of a query view
-        """
+        """Yield documents from all pages of a query."""
         if batch <= 0:
             self.logger.warning("batch must be > 0; defaulting to 20")
             batch = 20
