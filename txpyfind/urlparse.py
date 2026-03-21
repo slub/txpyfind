@@ -1,6 +1,4 @@
-"""
-urlparse module of ``txpyfind`` package
-"""
+"""Extract TYPO3-find query parameters from URLs."""
 import re
 from urllib.parse import unquote_plus as unquote
 
@@ -14,11 +12,10 @@ SORT = re.compile(r"tx_find_find\[sort\]=([a-zA-Z0-9_]*)[+ ]([a-zA-Z0-9_]*)&?")
 
 
 class URLParser:  # pylint: disable=R0902,R0903
-    """
-    ``URLParser`` class from ``txpyfind.urlparse`` module
-    """
+    """Parse TYPO3-find query parameters from a URL."""
 
     def __init__(self, url):
+        """Parse TYPO3-find parameters from the given URL."""
         self.url = url
         self.query = ""
         self.qtype = ""
@@ -35,9 +32,7 @@ class URLParser:  # pylint: disable=R0902,R0903
 
 
 def preserve_ampersand(url):
-    """
-    preserve ampersand (``&``) in given URL
-    """
+    """Preserve ampersand in the given URL."""
     amps = QUERY_AMP.findall(url)
     if len(amps) == 1:
         url = url.replace(amps[0], amps[0].replace("%", SUBSTITUTE))
@@ -46,9 +41,7 @@ def preserve_ampersand(url):
 
 
 def find_query(url):
-    """
-    find query parameter in given URL
-    """
+    """Find query parameter in the given URL."""
     url, ampersand = preserve_ampersand(url)
     url = unquote(url)
     if ampersand:
@@ -59,37 +52,27 @@ def find_query(url):
 
 
 def find_facets(url):
-    """
-    find facet parameters in given URL
-    """
+    """Find facet parameters in the given URL."""
     return FACET.findall(unquote(url))
 
 
 def find_page(url):
-    """
-    find page parameter in given URL
-    """
+    """Find page parameter in the given URL."""
     return PAGE.findall(unquote(url))
 
 
 def find_count(url):
-    """
-    find count parameter in given URL
-    """
+    """Find count parameter in the given URL."""
     return COUNT.findall(unquote(url))
 
 
 def find_sort(url):
-    """
-    find sort parameter in given URL
-    """
+    """Find sort parameter in the given URL."""
     return SORT.findall(unquote(url))
 
 
 def get_query(url):
-    """
-    get query parameter from given URL
-    """
+    """Get query parameter from the given URL."""
     query = find_query(url)
     if len(query) == 1:
         qtype = query[0][0]
@@ -101,9 +84,7 @@ def get_query(url):
 
 
 def get_facets(url):
-    """
-    get facet parameters from given URL
-    """
+    """Get facet parameters from the given URL."""
     facets = find_facets(url)
     if len(facets) > 0:
         fct = []
@@ -114,9 +95,7 @@ def get_facets(url):
 
 
 def get_page(url):
-    """
-    get page parameter from given URL
-    """
+    """Get page parameter from the given URL."""
     page = find_page(url)
     if len(page) == 1:
         return int(page[0])
@@ -124,9 +103,7 @@ def get_page(url):
 
 
 def get_count(url):
-    """
-    get count parameter from given URL
-    """
+    """Get count parameter from the given URL."""
     count = find_count(url)
     if len(count) > 0:
         return int(count[0])
@@ -134,9 +111,7 @@ def get_count(url):
 
 
 def get_sort(url):
-    """
-    get sort parameter from given URL
-    """
+    """Get sort parameter from the given URL."""
     sort = find_sort(url)
     if len(sort) > 0:
         return f"{sort[0][0]} {sort[0][1]}"

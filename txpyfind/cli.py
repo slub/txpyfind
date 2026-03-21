@@ -1,7 +1,6 @@
-"""
-command-line interface of ``txpyfind`` package
-"""
+"""Command-line interface for txpyfind."""
 import argparse
+import importlib
 import json
 import logging
 import os
@@ -30,6 +29,27 @@ def merge_facets(facet_list):
     return [{k: v} for k, v in facet_list]
 
 
+def resolve_parser_class(dotted_path):
+    """Import and return a class from a dotted path, or None for 'none'."""
+    if dotted_path.lower() == "none":
+        return "none"
+    module_path, _, class_name = dotted_path.rpartition(".")
+    if not module_path:
+        raise argparse.ArgumentTypeError(
+            f"parser must be a dotted path like 'package.module.Class'"
+            f" or 'none', got: {dotted_path}")
+    try:
+        module = importlib.import_module(module_path)
+    except ImportError as exc:
+        raise argparse.ArgumentTypeError(
+            f"could not import module '{module_path}': {exc}") from exc
+    try:
+        return getattr(module, class_name)
+    except AttributeError:
+        raise argparse.ArgumentTypeError(
+            f"module '{module_path}' has no class '{class_name}'")
+
+
 def build_parser():
     """Build and return the argument parser."""
     parser = argparse.ArgumentParser(
@@ -53,6 +73,21 @@ def build_parser():
         "--show-url",
         action="store_true",
         help="print the request URL instead of fetching the response")
+    parser.add_argument(
+        "--plain",
+        action="store_true",
+        help="print the plain response text instead of parsed output")
+    parser.add_argument(
+        "--parser",
+        type=resolve_parser_class,
+        default=None,
+        metavar="CLASS",
+        help="dotted import path of a custom parser class"
+             " (e.g. 'slubfind.parser.FincSolrResponse'),"
+             " or 'none' to disable parsing and print the raw"
+             " response; custom classes must accept a plain text"
+             " string as constructor argument and provide a .raw"
+             " attribute with JSON-serializable data")
     parser.add_argument(
         "-v", "--verbose",
         action="store_true",
@@ -92,7 +127,6 @@ def build_parser():
     query_parser.add_argument("query", help="search query string")
     query_parser.add_argument(
         "--export-format",
-        choices=["raw-solr-response", "json-solr-results", "json-all"],
         default="raw-solr-response",
         help="export format (default: raw-solr-response)")
     query_parser.add_argument(
@@ -152,6 +186,12 @@ def make_find(args):
     if query_types is None:
         query_types = ["default"]
 
+    kwargs = {}
+    if args.parser == "none":
+        kwargs["parser_class"] = None
+    elif args.parser is not None:
+        kwargs["parser_class"] = args.parser
+
     return Find(
         args.url,
         document_path=getattr(args, 'document_path', None),
@@ -159,7 +199,8 @@ def make_find(args):
         count_limit=getattr(args, 'count_limit', 100),
         sort_pattern=sort_pattern,
         export_format=getattr(args, 'export_format', 'raw-solr-response'),
-        export_page=args.export_page)
+        export_page=args.export_page,
+        **kwargs)
 
 
 def json_dumps(obj, pretty=False):
@@ -190,6 +231,12 @@ def cmd_query(find, args):
     if result is None:
         print("error: no results", file=sys.stderr)
         return 1
+    if isinstance(result, str):
+        print(result)
+        return 0
+    if args.plain:
+        print(result.plain if hasattr(result, "plain") else result)
+        return 0
     data = result.raw if hasattr(result, "raw") else result
     print(json_dumps(data, pretty=args.pretty))
     return 0
@@ -212,6 +259,12 @@ def cmd_document(find, args):
     if result is None:
         print("error: document not found", file=sys.stderr)
         return 1
+    if isinstance(result, str):
+        print(result)
+        return 0
+    if args.plain:
+        print(result.plain if hasattr(result, "plain") else result)
+        return 0
     data = result.raw if hasattr(result, "raw") else result
     print(json_dumps(data, pretty=args.pretty))
     return 0

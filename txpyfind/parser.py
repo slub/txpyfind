@@ -1,17 +1,14 @@
-"""
-parser module of ``txpyfind`` package
-"""
+"""Response parsers for TYPO3-find JSON export formats."""
 import html
 import json
 import logging
 
 
 class JSONResponse:  # pylint: disable=R0903
-    """
-    ``JSONResponse`` class from ``txpyfind.parser`` module
-    """
+    """Base parser for JSON responses with HTML unescaping."""
 
     def __init__(self, plain):
+        """Parse a JSON string into a response object."""
         self.plain = plain
         self.logger = logging.getLogger(f"{__name__}.{self.__class__.__name__}")
         try:
@@ -22,6 +19,7 @@ class JSONResponse:  # pylint: disable=R0903
         self.fields = self._names(raw=self.raw)
 
     def _names(self, raw=None):
+        """Return top-level field names from parsed data."""
         if raw is None:
             raw = self.raw
         if isinstance(raw, dict):
@@ -29,6 +27,7 @@ class JSONResponse:  # pylint: disable=R0903
         return []
 
     def _field(self, name, raw=None):
+        """Return a field value with HTML unescaping."""
         if raw is None:
             raw = self.raw
         if isinstance(raw, dict) and name in raw:
@@ -36,6 +35,7 @@ class JSONResponse:  # pylint: disable=R0903
         return None
 
     def _unescape(self, value):
+        """HTML-unescape string or list-of-strings values."""
         if isinstance(value, str):
             return html.unescape(value.strip())
         if isinstance(value, list) and len(value) > 0 and \
@@ -70,10 +70,12 @@ class RawSolrResponse(JSONResponse):
 
     @property
     def facet_counts(self):
+        """Return the facet_counts field."""
         return self._field("facet_counts")
 
     @property
     def highlighting(self):
+        """Return the highlighting field."""
         return self._field("highlighting")
 
 
@@ -92,6 +94,7 @@ class SolrResultsResponse(JSONResponse):
 
     @property
     def docs(self):
+        """Return the list of documents."""
         if self.ok:
             return self.raw
         return []
@@ -112,4 +115,5 @@ class AllResponse(JSONResponse):
 
     @property
     def settings(self):
+        """Return the settings field."""
         return self._field("settings")
